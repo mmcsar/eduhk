@@ -1,4 +1,4 @@
-THIS SHOULD BE A LINTER ERRORfrom sqlalchemy import create_engine
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, DeclarativeBase
 
 DATABASE_URL = "sqlite:///./app.db"

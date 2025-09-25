@@ -9,6 +9,7 @@ from .routes.notes import router as notes_router
 app = FastAPI(title="MVP Notes App")
 
 templates = Jinja2Templates(directory="app/templates")
+app.state.templates = templates
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 
