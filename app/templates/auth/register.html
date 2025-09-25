@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Register - MVP Notes</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <h1>Register</h1>
+      {% if error %}
+        <div class="alert">{{ error }}</div>
+      {% endif %}
+      <form method="post">
+        <label>Email
+          <input type="email" name="email" required />
+        </label>
+        <label>Password
+          <input type="password" name="password" minlength="6" required />
+        </label>
+        <button type="submit">Create account</button>
+      </form>
+      <p>Already have an account? <a href="/login">Login</a></p>
+    </main>
+  </body>
+</html>

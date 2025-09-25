@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>New Note - MVP Notes</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <h1>New Note</h1>
+      <form method="post" action="/notes">
+        <label>Title
+          <input type="text" name="title" required />
+        </label>
+        <label>Content
+          <textarea name="content" rows="8"></textarea>
+        </label>
+        <button type="submit">Create</button>
+        <a class="button" href="/notes">Cancel</a>
+      </form>
+    </main>
+  </body>
+</html>
