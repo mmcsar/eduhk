@@ -1,0 +1,520 @@
+## Masomo (Expo React Native)
+
+### Installation
+
+```bash
+cd /workspace/masomo
+pnpm i || yarn || npm i
+```
+
+### Démarrer
+
+```bash
+npm run start
+# ou
+yarn start
+# puis pressez "a" pour Android, "w" pour web
+```
+
+### Structure
+
+```
+src/
+  components/
+    common/
+    forms/
+    charts/
+  screens/
+    auth/
+    dashboard/
+    attendance/
+    students/
+    profile/
+  navigation/
+  services/
+    AuthService.js
+    AttendanceService.js
+    NFCService.js
+    QRService.js
+    ApiClient.js
+  context/
+  hooks/
+  utils/
+  constants/
+  assets/
+```
+
+### Notes
+
+- NFC: la prise en charge NFC complète peut nécessiter le workflow bare sur Android.
+- QR: utilise `expo-barcode-scanner` pour les permissions.
+
+
+export const COLORS = {
+  primary: '#2e7d32',
+  text: '#111',
+  border: '#ddd',
+  background: '#fff',
+};
+
+export const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+import React, { useState } from 'react';
+import { View, TextInput, StyleSheet } from 'react-native';
+import Button from '../common/Button';
+
+export default function LoginForm({ onSubmit }) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  return (
+    <View>
+      <TextInput placeholder="Email" value={email} onChangeText={setEmail} style={styles.input} />
+      <TextInput placeholder="Mot de passe" value={password} onChangeText={setPassword} secureTextEntry style={styles.input} />
+      <Button title="Se connecter" onPress={() => onSubmit({ email, password })} />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  input: {
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 12,
+  },
+});
+
+import React from 'react';
+import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+
+export default function Button({ title, onPress }) {
+  return (
+    <TouchableOpacity onPress={onPress} style={styles.btn}>
+      <Text style={styles.text}>{title}</Text>
+    </TouchableOpacity>
+  );
+}
+
+const styles = StyleSheet.create({
+  btn: {
+    backgroundColor: '#2e7d32',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  text: { color: 'white', fontWeight: '600' },
+});
+
+import { BarCodeScanner } from 'expo-barcode-scanner';
+
+export const QRService = {
+  async requestPermission() {
+    const { status } = await BarCodeScanner.requestPermissionsAsync();
+    return status === 'granted';
+  },
+};
+
+// Placeholder NFC service (Expo NFC support may require bare workflow on Android)
+export const NFCService = {
+  async readTag() {
+    // Implement with native module or third-party lib if needed
+    return { id: 'FAKE-NFC-ID' };
+  },
+};
+
+import ApiClient from './ApiClient';
+
+export const AttendanceService = {
+  async markPresentByQR(qrData) {
+    // return (await ApiClient.post('/attendance/qr', { data: qrData })).data;
+    return { success: true, method: 'qr', data: qrData };
+  },
+  async markPresentByNFC(nfcId) {
+    // return (await ApiClient.post('/attendance/nfc', { id: nfcId })).data;
+    return { success: true, method: 'nfc', id: nfcId };
+  },
+};
+
+import ApiClient from './ApiClient';
+
+export const AuthService = {
+  async login(payload) {
+    // return (await ApiClient.post('/auth/login', payload)).data;
+    return { id: '1', name: 'Utilisateur', email: payload.email };
+  },
+  async register(payload) {
+    // return (await ApiClient.post('/auth/register', payload)).data;
+    return { id: '1', name: payload.name, email: payload.email };
+  },
+};
+
+import axios from 'axios';
+
+const ApiClient = axios.create({
+  baseURL: 'https://api.example.com',
+  timeout: 15000,
+});
+
+ApiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+export default ApiClient;
+
+import React from 'react';
+import { View, Text, Button, StyleSheet } from 'react-native';
+import { useAuth } from '../../hooks/useAuth';
+
+export default function ProfileScreen() {
+  const { user, signOut } = useAuth();
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Profil</Text>
+      <Text>Nom: {user?.name}</Text>
+      <Text>Email: {user?.email}</Text>
+      <Button title="Se déconnecter" onPress={signOut} />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 24 },
+  title: { fontSize: 22, fontWeight: '700', marginBottom: 8 },
+});
+
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+
+export default function StudentsScreen() {
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Gestion des élèves</Text>
+      <Text>Liste, détails, et devoirs</Text>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  title: { fontSize: 22, fontWeight: '700', marginBottom: 8 },
+});
+
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+
+export default function AttendanceScreen() {
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Gestion des présences</Text>
+      <Text>Scanner NFC ou QR pour enregistrer la présence.</Text>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  title: { fontSize: 22, fontWeight: '700', marginBottom: 8 },
+});
+
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+
+export default function DashboardScreen() {
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Tableau de bord</Text>
+      <Text>Bienvenue sur Masomo</Text>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  title: { fontSize: 22, fontWeight: '700', marginBottom: 8 },
+});
+
+import React, { useState } from 'react';
+import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { useAuth } from '../../hooks/useAuth';
+
+export default function RegisterScreen() {
+  const { signIn } = useAuth();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const onRegister = async () => {
+    await signIn({ id: '1', name, email });
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Inscription</Text>
+      <TextInput placeholder="Nom" style={styles.input} value={name} onChangeText={setName} />
+      <TextInput placeholder="Email" style={styles.input} value={email} onChangeText={setEmail} />
+      <TextInput placeholder="Mot de passe" style={styles.input} secureTextEntry value={password} onChangeText={setPassword} />
+      <Button title="Créer le compte" onPress={onRegister} />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, justifyContent: 'center', padding: 24 },
+  title: { fontSize: 24, fontWeight: 'bold', marginBottom: 16 },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 12,
+  },
+});
+
+import React, { useState } from 'react';
+import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { useAuth } from '../../hooks/useAuth';
+
+export default function LoginScreen({ navigation }) {
+  const { signIn } = useAuth();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const onLogin = async () => {
+    await signIn({ id: '1', name: 'Utilisateur', email });
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Connexion</Text>
+      <TextInput
+        placeholder="Email"
+        style={styles.input}
+        autoCapitalize="none"
+        value={email}
+        onChangeText={setEmail}
+      />
+      <TextInput
+        placeholder="Mot de passe"
+        style={styles.input}
+        secureTextEntry
+        value={password}
+        onChangeText={setPassword}
+      />
+      <Button title="Se connecter" onPress={onLogin} />
+      <View style={{ height: 12 }} />
+      <Button title="Créer un compte" onPress={() => navigation.navigate('Register')} />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, justifyContent: 'center', padding: 24 },
+  title: { fontSize: 24, fontWeight: 'bold', marginBottom: 16 },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 12,
+  },
+});
+
+import { useContext } from 'react';
+import { AuthContext } from '../context/AuthContext';
+
+export function useAuth() {
+  return useContext(AuthContext);
+}
+
+import React, { createContext, useMemo, useState, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+export const AuthContext = createContext({
+  isAuthenticated: false,
+  user: null,
+  signIn: async () => {},
+  signOut: async () => {},
+});
+
+export function AuthProvider({ children }) {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const raw = await AsyncStorage.getItem('masomo:user');
+        if (raw) setUser(JSON.parse(raw));
+      } catch (e) {
+        // noop
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
+
+  const signIn = async (nextUser) => {
+    setUser(nextUser);
+    await AsyncStorage.setItem('masomo:user', JSON.stringify(nextUser));
+  };
+
+  const signOut = async () => {
+    setUser(null);
+    await AsyncStorage.removeItem('masomo:user');
+  };
+
+  const value = useMemo(
+    () => ({ isAuthenticated: !!user, user, signIn, signOut, loading }),
+    [user, loading]
+  );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+}
+
+import React from 'react';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import LoginScreen from '../screens/auth/LoginScreen';
+import RegisterScreen from '../screens/auth/RegisterScreen';
+import DashboardScreen from '../screens/dashboard/DashboardScreen';
+import AttendanceScreen from '../screens/attendance/AttendanceScreen';
+import StudentsScreen from '../screens/students/StudentsScreen';
+import ProfileScreen from '../screens/profile/ProfileScreen';
+import { useAuth } from '../hooks/useAuth';
+
+const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
+
+function MainTabs() {
+  return (
+    <Tab.Navigator>
+      <Tab.Screen name="Dashboard" component={DashboardScreen} />
+      <Tab.Screen name="Attendance" component={AttendanceScreen} />
+      <Tab.Screen name="Students" component={StudentsScreen} />
+      <Tab.Screen name="Profile" component={ProfileScreen} />
+    </Tab.Navigator>
+  );
+}
+
+export default function RootNavigator() {
+  const { isAuthenticated } = useAuth();
+
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      {isAuthenticated ? (
+        <Stack.Screen name="Main" component={MainTabs} />
+      ) : (
+        <>
+          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="Register" component={RegisterScreen} />
+        </>
+      )}
+    </Stack.Navigator>
+  );
+}
+
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import RootNavigator from './navigation/RootNavigator';
+import { AuthProvider } from './context/AuthContext';
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <NavigationContainer>
+        <RootNavigator />
+      </NavigationContainer>
+    </AuthProvider>
+  );
+}
+
+import { registerRootComponent } from 'expo';
+import App from './src/App';
+
+registerRootComponent(App);
+
+module.exports = function(api) {
+  api.cache(true);
+  return {
+    presets: ['babel-preset-expo'],
+    plugins: [
+      [
+        'module-resolver',
+        {
+          alias: {
+            src: './src',
+          },
+        },
+      ],
+    ],
+  };
+};
+
+{
+  "expo": {
+    "name": "Masomo",
+    "slug": "masomo",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "./src/assets/icon.png",
+    "splash": {
+      "image": "./src/assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./src/assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      }
+    },
+    "web": {
+      "favicon": "./src/assets/favicon.png"
+    }
+  }
+}
+
+{
+  "name": "masomo",
+  "version": "0.1.0",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "web": "expo start --web"
+  },
+  "dependencies": {
+    "@react-native-async-storage/async-storage": "^1.22.0",
+    "@react-navigation/bottom-tabs": "^6.5.20",
+    "@react-navigation/native": "^6.1.17",
+    "@react-navigation/native-stack": "^6.9.26",
+    "axios": "^1.7.2",
+    "expo": "^51.0.0",
+    "expo-barcode-scanner": "^12.10.2",
+    "expo-status-bar": "~1.12.1",
+    "react": "18.2.0",
+    "react-native": "0.74.2",
+    "react-native-safe-area-context": "4.10.5",
+    "react-native-screens": "~3.31.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.20.0"
+  }
+}
+
