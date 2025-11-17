@@ -9,7 +9,7 @@ Application éducative complète pour la gestion des écoles en RDC (attendance 
   npx expo start
   ```
 
-- `mmc-logo-web` : version web React + Vite + Tailwind CSS avec mise en page moderne.  
+- `mmc-logo-web` : version web React + Vite + Tailwind CSS avec animation du sceau et bouton de relance.  
   ```bash
   cd mmc-logo-web
   npm install
