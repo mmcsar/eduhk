@@ -1,16 +1,23 @@
-# React + Vite
+# MMC Logo — React + Tailwind
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Version web moderne du sceau « Maintenance de Matériel au Congo », bâtie avec React 18, Vite et Tailwind CSS 3. Tous les cercles, les textes courbes et la typographie centrale sont générés via SVG et utilitaires Tailwind pour garder un rendu net et responsive.
 
-Currently, two official plugins are available:
+## Stack
+- React 18 + Vite
+- Tailwind CSS 3 (JIT, classes arbitraires, backdrop blur)
+- SVG `textPath` pour le lettrage circulaire
+- Google Fonts (`Inter`, `Playfair Display`)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Lancer le projet
+```bash
+cd mmc-logo-web
+npm install        # déjà exécuté mais à refaire après un clone
+npm run dev        # démarre Vite sur http://localhost:5173
+```
 
-## React Compiler
+## Personnalisation
+- Couleurs, typo et ombres : `tailwind.config.js`
+- Mise en page principale : `src/App.jsx`
+- Styles globaux + directives Tailwind : `src/index.css`
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Les textes « MAINTENANCE DE MATERIEL » et « AU CONGO » peuvent être remplacés par n’importe quelle chaîne (les arcs s’ajustent automatiquement). Les cercles utilisent des classes Tailwind avec valeurs arbitraires (`stroke-[1.5px]`, `tracking-[0.75em]`, etc.) pour un contrôle précis sans CSS personnalisé.
