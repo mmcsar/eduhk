@@ -1,0 +1,54 @@
+{
+  "home": {
+    "hero": {
+      "title": "Transforming Transport in Africa",
+      "subtitle": "The leading platform connecting mines, brokers and transporters across the African corridor",
+      "dashboard": "Access Dashboard",
+      "marketplace": "Explore Marketplace"
+    },
+    "features": {
+      "title": "Why Choose TMSA?",
+      "tracking": {
+        "title": "Real-time Tracking",
+        "desc": "Track your cargo across borders with GPS precision"
+      },
+      "marketplace": {
+        "title": "Marketplace",
+        "desc": "Connect cargo owners with available trucks"
+      },
+      "payments": {
+        "title": "Secure Payments",
+        "desc": "Integrated mobile money and international payments"
+      },
+      "security": {
+        "title": "Verified Network",
+        "desc": "All participants verified and insured"
+      }
+    },
+    "cta": {
+      "title": "Ready to Transform Your Transport Operations?",
+      "subtitle": "Join thousands of transport professionals across Africa",
+      "button": "Get Started Free"
+    },
+    "footer": {
+      "tagline": "Connecting Africa through transport",
+      "product": "Product",
+      "company": "Company",
+      "legal": "Legal"
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Overview of your operations"
+  },
+  "missions": {
+    "title": "Missions",
+    "subtitle": "Manage your transport missions",
+    "new": "New Mission",
+    "empty": "No missions yet"
+  },
+  "tracking": {
+    "title": "Live Tracking",
+    "subtitle": "Monitor your fleet in real-time"
+  }
+}

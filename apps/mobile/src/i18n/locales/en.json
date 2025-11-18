@@ -1,0 +1,44 @@
+{
+  "auth": {
+    "welcomeBack": "Welcome back!",
+    "email": "Email",
+    "password": "Password",
+    "login": "Login",
+    "loggingIn": "Logging in...",
+    "loginError": "Login error",
+    "noAccount": "No account? Sign up"
+  },
+  "home": {
+    "greeting": "Hello",
+    "title": "Dashboard",
+    "activeMissions": "Active",
+    "completed": "Completed",
+    "pending": "Pending",
+    "currentMission": "Current Mission",
+    "inTransit": "In Transit",
+    "complete": "complete",
+    "viewDetails": "View Details",
+    "quickActions": "Quick Actions",
+    "checkIn": "Check-in",
+    "scanQR": "Scan QR",
+    "uploadDoc": "Document",
+    "emergency": "Emergency"
+  },
+  "tracking": {
+    "permissionDenied": "Location permission denied",
+    "yourLocation": "Your location",
+    "currentSpeed": "Current speed",
+    "startTracking": "Start Tracking",
+    "stopTracking": "Stop Tracking"
+  },
+  "documents": {
+    "title": "Documents",
+    "uploadNew": "Upload Document",
+    "recent": "Recent Documents"
+  },
+  "profile": {
+    "settings": "Settings",
+    "help": "Help",
+    "logout": "Logout"
+  }
+}

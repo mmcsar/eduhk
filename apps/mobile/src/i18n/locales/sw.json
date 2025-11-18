@@ -1,0 +1,44 @@
+{
+  "auth": {
+    "welcomeBack": "Karibu tena!",
+    "email": "Barua pepe",
+    "password": "Neno la siri",
+    "login": "Ingia",
+    "loggingIn": "Inaingia...",
+    "loginError": "Kosa la kuingia",
+    "noAccount": "Hakuna akaunti? Jisajili"
+  },
+  "home": {
+    "greeting": "Habari",
+    "title": "Dashibodi",
+    "activeMissions": "Hai",
+    "completed": "Zimekamilika",
+    "pending": "Zinasubiri",
+    "currentMission": "Misheni ya Sasa",
+    "inTransit": "Safarini",
+    "complete": "imekamilika",
+    "viewDetails": "Tazama Maelezo",
+    "quickActions": "Vitendo vya Haraka",
+    "checkIn": "Check-in",
+    "scanQR": "Scan QR",
+    "uploadDoc": "Hati",
+    "emergency": "Dharura"
+  },
+  "tracking": {
+    "permissionDenied": "Ruhusa ya eneo imekataliwa",
+    "yourLocation": "Mahali pako",
+    "currentSpeed": "Kasi ya sasa",
+    "startTracking": "Anza Kufuatilia",
+    "stopTracking": "Acha Kufuatilia"
+  },
+  "documents": {
+    "title": "Hati",
+    "uploadNew": "Pakia Hati",
+    "recent": "Hati za Karibuni"
+  },
+  "profile": {
+    "settings": "Mipangilio",
+    "help": "Msaada",
+    "logout": "Toka"
+  }
+}

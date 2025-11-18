@@ -1,0 +1,54 @@
+{
+  "home": {
+    "hero": {
+      "title": "Kubadilisha Usafirishaji Afrika",
+      "subtitle": "Jukwaa kuu linalolinganisha migodi, wawekezaji na wasafirishaji kote barabara ya Afrika",
+      "dashboard": "Fikia Dashibodi",
+      "marketplace": "Chunguza Soko"
+    },
+    "features": {
+      "title": "Kwa Nini Chagua TMSA?",
+      "tracking": {
+        "title": "Ufuatiliaji wa Wakati Halisi",
+        "desc": "Fuatilia mizigo yako kupitia mipaka kwa usahihi wa GPS"
+      },
+      "marketplace": {
+        "title": "Soko",
+        "desc": "Unganisha wamiliki wa mizigo na malori zilizo wazi"
+      },
+      "payments": {
+        "title": "Malipo Salama",
+        "desc": "Pesa za simu zilizojumuishwa na malipo ya kimataifa"
+      },
+      "security": {
+        "title": "Mtandao Uliothibitishwa",
+        "desc": "Washiriki wote wamethibitishwa na wamebimwa"
+      }
+    },
+    "cta": {
+      "title": "Uko Tayari Kubadilisha Shughuli Zako za Usafirishaji?",
+      "subtitle": "Jiunge na maelfu ya wataalamu wa usafirishaji kote Afrika",
+      "button": "Anza Bure"
+    },
+    "footer": {
+      "tagline": "Kuunganisha Afrika kupitia usafirishaji",
+      "product": "Bidhaa",
+      "company": "Kampuni",
+      "legal": "Kisheria"
+    }
+  },
+  "dashboard": {
+    "title": "Dashibodi",
+    "subtitle": "Muhtasari wa shughuli zako"
+  },
+  "missions": {
+    "title": "Misheni",
+    "subtitle": "Dhibiti misheni yako ya usafirishaji",
+    "new": "Misheni Mpya",
+    "empty": "Hakuna misheni bado"
+  },
+  "tracking": {
+    "title": "Ufuatiliaji Mubashara",
+    "subtitle": "Fuatilia gari lako wakati halisi"
+  }
+}

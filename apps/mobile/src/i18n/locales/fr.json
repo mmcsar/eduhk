@@ -1,0 +1,44 @@
+{
+  "auth": {
+    "welcomeBack": "Bon retour!",
+    "email": "Email",
+    "password": "Mot de passe",
+    "login": "Se connecter",
+    "loggingIn": "Connexion...",
+    "loginError": "Erreur de connexion",
+    "noAccount": "Pas de compte? S'inscrire"
+  },
+  "home": {
+    "greeting": "Bonjour",
+    "title": "Tableau de Bord",
+    "activeMissions": "Actives",
+    "completed": "Complétées",
+    "pending": "En attente",
+    "currentMission": "Mission Actuelle",
+    "inTransit": "En Transit",
+    "complete": "complété",
+    "viewDetails": "Voir Détails",
+    "quickActions": "Actions Rapides",
+    "checkIn": "Check-in",
+    "scanQR": "Scanner QR",
+    "uploadDoc": "Document",
+    "emergency": "Urgence"
+  },
+  "tracking": {
+    "permissionDenied": "Permission de localisation refusée",
+    "yourLocation": "Votre position",
+    "currentSpeed": "Vitesse actuelle",
+    "startTracking": "Démarrer Suivi",
+    "stopTracking": "Arrêter Suivi"
+  },
+  "documents": {
+    "title": "Documents",
+    "uploadNew": "Télécharger Document",
+    "recent": "Documents Récents"
+  },
+  "profile": {
+    "settings": "Paramètres",
+    "help": "Aide",
+    "logout": "Déconnexion"
+  }
+}

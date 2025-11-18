@@ -1,0 +1,20 @@
+{
+  "name": "@tmsa/payment-service",
+  "version": "1.0.0",
+  "description": "TMSA Payment Service - CinetPay, Stripe, Wallet Management",
+  "scripts": {
+    "build": "nest build",
+    "dev": "nest start --watch",
+    "start": "node dist/main"
+  },
+  "dependencies": {
+    "@tmsa/types": "workspace:*",
+    "@tmsa/utils": "workspace:*",
+    "@nestjs/common": "^10.3.0",
+    "@nestjs/core": "^10.3.0",
+    "@nestjs/mongoose": "^10.0.2",
+    "mongoose": "^8.1.0",
+    "stripe": "^14.14.0",
+    "axios": "^1.6.0"
+  }
+}

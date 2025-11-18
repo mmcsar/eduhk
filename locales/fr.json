@@ -1,0 +1,54 @@
+{
+  "home": {
+    "hero": {
+      "title": "Transformer le Transport en Afrique",
+      "subtitle": "La plateforme leader connectant mines, courtiers et transporteurs à travers le corridor africain",
+      "dashboard": "Accéder au Tableau de Bord",
+      "marketplace": "Explorer la Place de Marché"
+    },
+    "features": {
+      "title": "Pourquoi Choisir TMSA?",
+      "tracking": {
+        "title": "Suivi en Temps Réel",
+        "desc": "Suivez votre cargaison à travers les frontières avec précision GPS"
+      },
+      "marketplace": {
+        "title": "Place de Marché",
+        "desc": "Connectez les propriétaires de cargo avec les camions disponibles"
+      },
+      "payments": {
+        "title": "Paiements Sécurisés",
+        "desc": "Mobile money intégré et paiements internationaux"
+      },
+      "security": {
+        "title": "Réseau Vérifié",
+        "desc": "Tous les participants vérifiés et assurés"
+      }
+    },
+    "cta": {
+      "title": "Prêt à Transformer Vos Opérations de Transport?",
+      "subtitle": "Rejoignez des milliers de professionnels du transport à travers l'Afrique",
+      "button": "Commencer Gratuitement"
+    },
+    "footer": {
+      "tagline": "Connecter l'Afrique par le transport",
+      "product": "Produit",
+      "company": "Entreprise",
+      "legal": "Légal"
+    }
+  },
+  "dashboard": {
+    "title": "Tableau de Bord",
+    "subtitle": "Aperçu de vos opérations"
+  },
+  "missions": {
+    "title": "Missions",
+    "subtitle": "Gérer vos missions de transport",
+    "new": "Nouvelle Mission",
+    "empty": "Aucune mission pour le moment"
+  },
+  "tracking": {
+    "title": "Suivi en Direct",
+    "subtitle": "Surveillez votre flotte en temps réel"
+  }
+}

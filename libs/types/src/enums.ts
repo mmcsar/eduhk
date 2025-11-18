@@ -1,0 +1,197 @@
+// ========== USER & AUTH ENUMS ==========
+
+export enum UserRole {
+  SUPER_ADMIN = 'SUPER_ADMIN',
+  ADMIN = 'ADMIN',
+  MINE_OPERATOR = 'MINE_OPERATOR',
+  BROKER = 'BROKER',
+  DRIVER = 'DRIVER',
+  AGENT_FRONTIERE = 'AGENT_FRONTIERE',
+  AGENT_PESAGE = 'AGENT_PESAGE',
+  AGENT_CONTROLE = 'AGENT_CONTROLE',
+  FINANCIAL = 'FINANCIAL',
+  VIEWER = 'VIEWER',
+}
+
+export enum UserStatus {
+  ACTIVE = 'ACTIVE',
+  INACTIVE = 'INACTIVE',
+  SUSPENDED = 'SUSPENDED',
+  PENDING_VERIFICATION = 'PENDING_VERIFICATION',
+}
+
+// ========== MISSION ENUMS ==========
+
+export enum MissionStatus {
+  DRAFT = 'DRAFT',
+  PUBLISHED = 'PUBLISHED',
+  ASSIGNED = 'ASSIGNED',
+  IN_PROGRESS = 'IN_PROGRESS',
+  AT_CHECKPOINT = 'AT_CHECKPOINT',
+  COMPLETED = 'COMPLETED',
+  CANCELLED = 'CANCELLED',
+  DISPUTED = 'DISPUTED',
+}
+
+export enum MissionType {
+  EXPORT = 'EXPORT',
+  IMPORT = 'IMPORT',
+  INTERNAL = 'INTERNAL',
+  CROSS_BORDER = 'CROSS_BORDER',
+}
+
+export enum CargoType {
+  MINERALS = 'MINERALS',      // Cobalt, Copper, Coltan
+  CONTAINERS = 'CONTAINERS',
+  BULK = 'BULK',
+  GENERAL = 'GENERAL',
+  DANGEROUS = 'DANGEROUS',
+  REFRIGERATED = 'REFRIGERATED',
+}
+
+// ========== TRACKING ENUMS ==========
+
+export enum CheckpointType {
+  ORIGIN = 'ORIGIN',
+  BORDER_CROSSING = 'BORDER_CROSSING',
+  WEIGHING_STATION = 'WEIGHING_STATION',
+  CUSTOMS = 'CUSTOMS',
+  INSPECTION = 'INSPECTION',
+  REST_AREA = 'REST_AREA',
+  DESTINATION = 'DESTINATION',
+}
+
+export enum CheckpointStatus {
+  PENDING = 'PENDING',
+  ARRIVED = 'ARRIVED',
+  PROCESSING = 'PROCESSING',
+  APPROVED = 'APPROVED',
+  REJECTED = 'REJECTED',
+  DEPARTED = 'DEPARTED',
+}
+
+// ========== VEHICLE ENUMS ==========
+
+export enum VehicleType {
+  SEMI_TRAILER = 'SEMI_TRAILER',
+  RIGID_TRUCK = 'RIGID_TRUCK',
+  TRUCK_TRAILER = 'TRUCK_TRAILER',
+  FLATBED = 'FLATBED',
+  TANKER = 'TANKER',
+  REFRIGERATED_TRUCK = 'REFRIGERATED_TRUCK',
+}
+
+export enum VehicleStatus {
+  AVAILABLE = 'AVAILABLE',
+  IN_TRANSIT = 'IN_TRANSIT',
+  MAINTENANCE = 'MAINTENANCE',
+  INACTIVE = 'INACTIVE',
+}
+
+// ========== PAYMENT ENUMS ==========
+
+export enum PaymentStatus {
+  PENDING = 'PENDING',
+  PROCESSING = 'PROCESSING',
+  COMPLETED = 'COMPLETED',
+  FAILED = 'FAILED',
+  REFUNDED = 'REFUNDED',
+  DISPUTED = 'DISPUTED',
+}
+
+export enum PaymentMethod {
+  MOBILE_MONEY = 'MOBILE_MONEY',
+  BANK_TRANSFER = 'BANK_TRANSFER',
+  CARD = 'CARD',
+  TMSA_WALLET = 'TMSA_WALLET',
+  CASH = 'CASH',
+}
+
+export enum PaymentProvider {
+  CINETPAY = 'CINETPAY',
+  STRIPE = 'STRIPE',
+  FLUTTERWAVE = 'FLUTTERWAVE',
+  PAYPAL = 'PAYPAL',
+  INTERNAL = 'INTERNAL',
+}
+
+export enum TransactionType {
+  MISSION_PAYMENT = 'MISSION_PAYMENT',
+  DEPOSIT = 'DEPOSIT',
+  WITHDRAWAL = 'WITHDRAWAL',
+  REFUND = 'REFUND',
+  FEE = 'FEE',
+  COMMISSION = 'COMMISSION',
+}
+
+// ========== NOTIFICATION ENUMS ==========
+
+export enum NotificationType {
+  MISSION_ASSIGNED = 'MISSION_ASSIGNED',
+  MISSION_STARTED = 'MISSION_STARTED',
+  CHECKPOINT_ARRIVED = 'CHECKPOINT_ARRIVED',
+  CHECKPOINT_APPROVED = 'CHECKPOINT_APPROVED',
+  MISSION_COMPLETED = 'MISSION_COMPLETED',
+  PAYMENT_RECEIVED = 'PAYMENT_RECEIVED',
+  PAYMENT_SENT = 'PAYMENT_SENT',
+  DOCUMENT_UPLOADED = 'DOCUMENT_UPLOADED',
+  ALERT = 'ALERT',
+  SYSTEM = 'SYSTEM',
+}
+
+export enum NotificationChannel {
+  PUSH = 'PUSH',
+  SMS = 'SMS',
+  EMAIL = 'EMAIL',
+  IN_APP = 'IN_APP',
+}
+
+// ========== DOCUMENT ENUMS ==========
+
+export enum DocumentType {
+  BILL_OF_LADING = 'BILL_OF_LADING',
+  PROOF_OF_DELIVERY = 'PROOF_OF_DELIVERY',
+  CUSTOMS_DECLARATION = 'CUSTOMS_DECLARATION',
+  INVOICE = 'INVOICE',
+  WEIGHING_SLIP = 'WEIGHING_SLIP',
+  INSURANCE = 'INSURANCE',
+  VEHICLE_REGISTRATION = 'VEHICLE_REGISTRATION',
+  DRIVER_LICENSE = 'DRIVER_LICENSE',
+  ID_DOCUMENT = 'ID_DOCUMENT',
+  PHOTO = 'PHOTO',
+  OTHER = 'OTHER',
+}
+
+// ========== CORRIDOR ENUMS ==========
+
+export enum Corridor {
+  LUBUMBASHI_DAR_ES_SALAAM = 'LUBUMBASHI_DAR_ES_SALAAM',    // RDC-Tanzania
+  LUBUMBASHI_DURBAN = 'LUBUMBASHI_DURBAN',                    // RDC-South Africa
+  KINSHASA_MATADI = 'KINSHASA_MATADI',                        // RDC Internal
+  KOLWEZI_LOBITO = 'KOLWEZI_LOBITO',                          // RDC-Angola
+  GOMA_MOMBASA = 'GOMA_MOMBASA',                              // RDC-Kenya
+}
+
+// ========== LANGUAGE ENUMS ==========
+
+export enum Language {
+  FRENCH = 'fr',
+  ENGLISH = 'en',
+  SWAHILI = 'sw',
+  PORTUGUESE = 'pt',
+  LINGALA = 'ln',
+}
+
+// ========== MARKETPLACE ENUMS ==========
+
+export enum ListingStatus {
+  ACTIVE = 'ACTIVE',
+  MATCHED = 'MATCHED',
+  EXPIRED = 'EXPIRED',
+  CANCELLED = 'CANCELLED',
+}
+
+export enum ListingType {
+  CARGO_AVAILABLE = 'CARGO_AVAILABLE',    // J'ai du cargo à transporter
+  TRUCK_AVAILABLE = 'TRUCK_AVAILABLE',    // J'ai un camion disponible
+}
