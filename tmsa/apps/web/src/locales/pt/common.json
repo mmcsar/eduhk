@@ -1,0 +1,28 @@
+{
+  "tagline": "Inteligência logística africana",
+  "cta": "Solicitar demo do corredor",
+  "heroTitle": "Um hub para missões, pagamentos e tracking em todo o continente",
+  "heroSubtitle": "Visibilidade em tempo real para mineradoras, brokers e motoristas de Dakar a Dar es Salaam.",
+  "nav": {
+    "dashboard": "Painel",
+    "tracking": "Tracking",
+    "marketplace": "Marketplace",
+    "admin": "Admin MMC"
+  },
+  "dashboard": {
+    "welcome": "Bem-vindo de volta, líder de operações",
+    "kpis": "KPIs ao vivo",
+    "missions": "Missões ativas",
+    "drivers": "Motoristas online",
+    "payments": "Pagamentos liquidados"
+  },
+  "tracking": {
+    "title": "Tracking de missões",
+    "subtitle": "Monitore cada corredor com streams socket resilientes.",
+    "latency": "Latência do sinal"
+  },
+  "marketplace": {
+    "title": "Conecte cargas e capacidade",
+    "subtitle": "Leilões inteligentes para frotas verificadas"
+  }
+}

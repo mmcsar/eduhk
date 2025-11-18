@@ -1,0 +1,28 @@
+{
+  "tagline": "Ujasusi wa usafirishaji barani Afrika",
+  "cta": "Omba demo ya korido",
+  "heroTitle": "Kituo kimoja cha misheni, malipo na ufuatiliaji",
+  "heroSubtitle": "Uwazi wa papo hapo kwa makampuni ya madini, mawakala na madereva kutoka Dakar hadi Dar es Salaam.",
+  "nav": {
+    "dashboard": "Dashibodi",
+    "tracking": "Ufuatiliaji",
+    "marketplace": "Soko",
+    "admin": "Utawala MMC"
+  },
+  "dashboard": {
+    "welcome": "Karibu tena, kiongozi wa shughuli",
+    "kpis": "Viashiria hai",
+    "missions": "Misheni inayoendelea",
+    "drivers": "Madereva mtandaoni",
+    "payments": "Malipo yamekamilika"
+  },
+  "tracking": {
+    "title": "Ufuatiliaji wa misheni",
+    "subtitle": "Dhibiti kila korido kwa mitiririko imara ya socket.",
+    "latency": "Muda wa mwitikio"
+  },
+  "marketplace": {
+    "title": "Linganishi mizigo na magari",
+    "subtitle": "Zabuni mahiri kwa fleet zilizothibitishwa"
+  }
+}

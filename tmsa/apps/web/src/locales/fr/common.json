@@ -1,0 +1,28 @@
+{
+  "tagline": "Intelligence logistique panafricaine",
+  "cta": "Demander une démo corridor",
+  "heroTitle": "Un hub unique pour missions, paiements et tracking",
+  "heroSubtitle": "Visibilité temps réel pour les maisons minières, brokers et chauffeurs de Dakar à Dar es Salaam.",
+  "nav": {
+    "dashboard": "Tableau de bord",
+    "tracking": "Tracking",
+    "marketplace": "Marketplace",
+    "admin": "Admin MMC"
+  },
+  "dashboard": {
+    "welcome": "Bon retour, chef des opérations",
+    "kpis": "KPIs en direct",
+    "missions": "Missions actives",
+    "drivers": "Chauffeurs connectés",
+    "payments": "Paiements réglés"
+  },
+  "tracking": {
+    "title": "Suivi des missions",
+    "subtitle": "Surveille chaque corridor avec des flux socket résilients.",
+    "latency": "Latence signal"
+  },
+  "marketplace": {
+    "title": "Relier cargaisons et capacités",
+    "subtitle": "Appels d'offres intelligents pour flottes vérifiées"
+  }
+}

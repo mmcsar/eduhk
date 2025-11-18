@@ -1,0 +1,28 @@
+{
+  "tagline": "Africa-wide logistics intelligence",
+  "cta": "Book a corridor demo",
+  "heroTitle": "One hub for missions, payments and tracking across the continent",
+  "heroSubtitle": "Realtime visibility for mining houses, brokers and drivers operating from Dakar to Dar es Salaam.",
+  "nav": {
+    "dashboard": "Dashboard",
+    "tracking": "Tracking",
+    "marketplace": "Marketplace",
+    "admin": "Admin MMC"
+  },
+  "dashboard": {
+    "welcome": "Welcome back, ops leader",
+    "kpis": "Live KPIs",
+    "missions": "Active missions",
+    "drivers": "Drivers online",
+    "payments": "Payments settled"
+  },
+  "tracking": {
+    "title": "Mission tracking",
+    "subtitle": "Monitor every corridor with resilient socket streams.",
+    "latency": "Signal latency"
+  },
+  "marketplace": {
+    "title": "Match freight with capacity",
+    "subtitle": "Smart tendering for verified fleets"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "name": "tmsa",
+  "version": "0.1.0",
+  "private": true,
+  "description": "TMSA Africa Transport Hub – multi-platform logistics monorepo",
+  "packageManager": "npm@10.9.0",
+  "workspaces": [
+    "apps/*",
+    "services/*",
+    "libs/*"
+  ],
+  "scripts": {
+    "dev:web": "npm run dev --workspace web",
+    "dev:mobile": "npm run start --workspace mobile",
+    "dev:api": "npm run start:dev --workspace api-gateway",
+    "dev:auth": "npm run start:dev --workspace auth-service",
+    "dev:tracking": "npm run start:dev --workspace tracking-service",
+    "dev:payments": "npm run start:dev --workspace payment-service",
+    "lint:web": "npm run lint --workspace web",
+    "build:web": "npm run build --workspace web",
+    "build:api": "npm run build --workspace api-gateway",
+    "build:auth": "npm run build --workspace auth-service",
+    "build:tracking": "npm run build --workspace tracking-service",
+    "build:payments": "npm run build --workspace payment-service",
+    "clean": "git clean -fdX",
+    "turbo": "turbo"
+  },
+  "devDependencies": {
+    "turbo": "^2.1.1"
+  }
+}

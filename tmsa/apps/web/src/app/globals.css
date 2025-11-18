@@ -1,0 +1,38 @@
+@import "tailwindcss";
+
+:root {
+  --background: #030712;
+  --foreground: #f4f4f5;
+  --muted: #0f172a;
+  --accent: #00c2ff;
+  --accent-strong: #f97316;
+  --border: rgba(255, 255, 255, 0.08);
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: radial-gradient(circle at top, rgba(0, 194, 255, 0.08), transparent 50%),
+    linear-gradient(180deg, rgba(3, 7, 18, 1) 0%, rgba(3, 7, 18, 0.95) 100%);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    sans-serif;
+}
+
+.glass-panel {
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(16px);
+}
+
+.gradient-text {
+  background: linear-gradient(120deg, #f97316 0%, #facc15 45%, #22d3ee 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
