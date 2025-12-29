@@ -13,6 +13,7 @@ import { AuthContext } from './src/context/AuthContext';
 import { USER_KEY, USER_TOKEN_KEY } from './src/constants/storage';
 import type { AuthStackParamList, MainTabParamList } from './src/types/navigation';
 import type { User } from './src/types/auth';
+import { authErrorMessage, clearSession, login, persistSession, register } from './src/services/authService';
 
 // Auth Screens
 import LoginScreen from './src/screens/auth/LoginScreen';
@@ -134,35 +135,28 @@ export default function App() {
           if (!email || !password) {
             return { success: false as const, error: 'Missing email or password' };
           }
-
-          const mockUser: User = {
-            id: '123',
-            email,
-            firstName: 'Test',
-            role: 'client',
-          };
-
-          const token = 'mock-token';
-
-          // Persist token (so refresh keeps you logged in)
-          await SecureStore.setItemAsync(USER_TOKEN_KEY, token);
-          await SecureStore.setItemAsync(USER_KEY, JSON.stringify(mockUser));
-
-          setUser(mockUser);
+          const { token, user } = await login({ email, password });
+          await persistSession(token, user);
+          setUser(user);
           setToken(token);
           return { success: true as const };
         } catch (error) {
-          const message =
-            error instanceof Error ? error.message : 'Unable to sign in';
-          return { success: false as const, error: message };
+          return { success: false as const, error: authErrorMessage(error) };
         }
       },
-      signUp: async () => {
-        return { success: true as const };
+      signUp: async (email: string, password: string, firstName: string, lastName: string) => {
+        try {
+          if (!email || !password || !firstName || !lastName) {
+            return { success: false as const, error: 'Please fill in all fields' };
+          }
+          await register({ email, password, firstName, lastName });
+          return { success: true as const };
+        } catch (error) {
+          return { success: false as const, error: authErrorMessage(error) };
+        }
       },
       signOut: async () => {
-        await SecureStore.deleteItemAsync(USER_TOKEN_KEY);
-        await SecureStore.deleteItemAsync(USER_KEY);
+        await clearSession();
         logout();
       },
     }),

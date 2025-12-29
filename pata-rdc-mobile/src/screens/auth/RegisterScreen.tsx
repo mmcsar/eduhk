@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   View,
   Text,
@@ -10,6 +10,7 @@ import {
 import { Button } from '../../components/Button';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { AuthStackParamList } from '../../types/navigation';
+import { AuthContext } from '../../context/AuthContext';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'Register'>;
 
@@ -21,6 +22,8 @@ export default function RegisterScreen({ navigation }: Props) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  const { signUp } = useContext(AuthContext);
+
   const handleRegister = async () => {
     if (!email || !password || !firstName || !lastName) {
       setError('Please fill in all fields');
@@ -31,7 +34,12 @@ export default function RegisterScreen({ navigation }: Props) {
     setError('');
 
     try {
-      console.log('Register:', { email, password, firstName, lastName });
+      const result = await signUp(email, password, firstName, lastName);
+      if (!result.success) {
+        setError(result.error);
+        return;
+      }
+
       navigation.navigate('Login');
     } catch (err: any) {
       setError(err?.message || 'Registration failed');
