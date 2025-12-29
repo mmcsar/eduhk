@@ -10,7 +10,7 @@ import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
 import { useAuthStore } from './src/store/authStore';
 import { AuthContext } from './src/context/AuthContext';
-import { USER_TOKEN_KEY } from './src/constants/storage';
+import { USER_KEY, USER_TOKEN_KEY } from './src/constants/storage';
 import type { AuthStackParamList, MainTabParamList } from './src/types/navigation';
 import type { User } from './src/types/auth';
 
@@ -102,9 +102,19 @@ export default function App() {
   useEffect(() => {
     const bootstrap = async () => {
       try {
-        const token = await SecureStore.getItemAsync(USER_TOKEN_KEY);
-        if (token) {
-          setToken(token);
+        const [token, userJson] = await Promise.all([
+          SecureStore.getItemAsync(USER_TOKEN_KEY),
+          SecureStore.getItemAsync(USER_KEY),
+        ]);
+
+        if (token) setToken(token);
+        if (userJson) {
+          try {
+            const user = JSON.parse(userJson) as User;
+            setUser(user);
+          } catch {
+            // ignore invalid stored user
+          }
         }
       } catch (error) {
         console.error('Bootstrap error:', error);
@@ -136,6 +146,7 @@ export default function App() {
 
           // Persist token (so refresh keeps you logged in)
           await SecureStore.setItemAsync(USER_TOKEN_KEY, token);
+          await SecureStore.setItemAsync(USER_KEY, JSON.stringify(mockUser));
 
           setUser(mockUser);
           setToken(token);
@@ -151,6 +162,7 @@ export default function App() {
       },
       signOut: async () => {
         await SecureStore.deleteItemAsync(USER_TOKEN_KEY);
+        await SecureStore.deleteItemAsync(USER_KEY);
         logout();
       },
     }),
