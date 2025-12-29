@@ -6,9 +6,13 @@ import { Ionicons } from '@expo/vector-icons';
 import * as SplashScreen from 'expo-splash-screen';
 import * as SecureStore from 'expo-secure-store';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
 import { useAuthStore } from './src/store/authStore';
 import { AuthContext } from './src/context/AuthContext';
+import { USER_TOKEN_KEY } from './src/constants/storage';
+import type { AuthStackParamList, MainTabParamList } from './src/types/navigation';
+import type { User } from './src/types/auth';
 
 // Auth Screens
 import LoginScreen from './src/screens/auth/LoginScreen';
@@ -20,8 +24,8 @@ import SearchScreen from './src/screens/main/SearchScreen';
 import BookingHistoryScreen from './src/screens/main/BookingHistoryScreen';
 import ProfileScreen from './src/screens/main/ProfileScreen';
 
-const Stack = createNativeStackNavigator();
-const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator<AuthStackParamList>();
+const Tab = createBottomTabNavigator<MainTabParamList>();
 
 SplashScreen.preventAutoHideAsync().catch(() => {
   // no-op: can throw if already prevented
@@ -93,12 +97,12 @@ function MainStack() {
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
-  const { userToken, setUser, setToken } = useAuthStore();
+  const { userToken, setUser, setToken, logout } = useAuthStore();
 
   useEffect(() => {
     const bootstrap = async () => {
       try {
-        const token = await SecureStore.getItemAsync('userToken');
+        const token = await SecureStore.getItemAsync(USER_TOKEN_KEY);
         if (token) {
           setToken(token);
         }
@@ -117,31 +121,48 @@ export default function App() {
     () => ({
       signIn: async (email: string, password: string) => {
         try {
-          const mockUser = {
+          if (!email || !password) {
+            return { success: false as const, error: 'Missing email or password' };
+          }
+
+          const mockUser: User = {
             id: '123',
             email,
             firstName: 'Test',
             role: 'client',
           };
+
+          const token = 'mock-token';
+
+          // Persist token (so refresh keeps you logged in)
+          await SecureStore.setItemAsync(USER_TOKEN_KEY, token);
+
           setUser(mockUser);
-          setToken('mock-token');
-          return { success: true };
+          setToken(token);
+          return { success: true as const };
         } catch (error) {
-          return { success: false, error };
+          const message =
+            error instanceof Error ? error.message : 'Unable to sign in';
+          return { success: false as const, error: message };
         }
       },
       signUp: async () => {
-        return { success: true };
+        return { success: true as const };
       },
       signOut: async () => {
-        await SecureStore.deleteItemAsync('userToken');
+        await SecureStore.deleteItemAsync(USER_TOKEN_KEY);
+        logout();
       },
     }),
-    [setToken, setUser]
+    [logout, setToken, setUser]
   );
 
   if (isLoading) {
-    return null;
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#007AFF" />
+      </View>
+    );
   }
 
   return (
@@ -154,3 +175,12 @@ export default function App() {
     </GestureHandlerRootView>
   );
 }
+
+const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#fff',
+  },
+});

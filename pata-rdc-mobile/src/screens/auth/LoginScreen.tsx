@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   View,
   Text,
@@ -6,17 +6,23 @@ import {
   TextInput,
   ScrollView,
   SafeAreaView,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import { Button } from '../../components/Button';
-import { useAuthStore } from '../../store/authStore';
+import { AuthContext } from '../../context/AuthContext';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import type { AuthStackParamList } from '../../types/navigation';
 
-export default function LoginScreen({ navigation }: any) {
+type Props = NativeStackScreenProps<AuthStackParamList, 'Login'>;
+
+export default function LoginScreen({ navigation }: Props) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const { setUser, setToken } = useAuthStore();
+  const { signIn } = useContext(AuthContext);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -28,16 +34,10 @@ export default function LoginScreen({ navigation }: any) {
     setError('');
 
     try {
-      const user = {
-        id: '123',
-        email,
-        firstName: 'Test',
-        role: 'client',
-      };
-      const token = 'mock-token-will-be-replaced';
-
-      setUser(user);
-      setToken(token);
+      const result = await signIn(email, password);
+      if (!result.success) {
+        setError(result.error);
+      }
     } catch (err: any) {
       setError(err?.message || 'Login failed');
     } finally {
@@ -47,56 +47,61 @@ export default function LoginScreen({ navigation }: any) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.content}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Pata RDC</Text>
-          <Text style={styles.subtitle}>Find Services Near You</Text>
-        </View>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.select({ ios: 'padding', android: undefined })}
+      >
+        <ScrollView contentContainerStyle={styles.content}>
+          <View style={styles.header}>
+            <Text style={styles.title}>Pata RDC</Text>
+            <Text style={styles.subtitle}>Find Services Near You</Text>
+          </View>
 
-        {error ? <Text style={styles.error}>{error}</Text> : null}
+          {error ? <Text style={styles.error}>{error}</Text> : null}
 
-        <View style={styles.formGroup}>
-          <Text style={styles.label}>Email</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="your@email.com"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            editable={!loading}
-          />
-        </View>
+          <View style={styles.formGroup}>
+            <Text style={styles.label}>Email</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="your@email.com"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              editable={!loading}
+            />
+          </View>
 
-        <View style={styles.formGroup}>
-          <Text style={styles.label}>Password</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter your password"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-            editable={!loading}
-          />
-        </View>
+          <View style={styles.formGroup}>
+            <Text style={styles.label}>Password</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter your password"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+              editable={!loading}
+            />
+          </View>
 
-        <Button
-          title="Login"
-          onPress={handleLogin}
-          loading={loading}
-          style={styles.button}
-        />
-
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>Don't have an account? </Text>
           <Button
-            title="Register"
-            onPress={() => navigation.navigate('Register')}
-            variant="secondary"
-            style={styles.registerButton}
+            title="Login"
+            onPress={handleLogin}
+            loading={loading}
+            style={styles.button}
           />
-        </View>
-      </ScrollView>
+
+          <View style={styles.footer}>
+            <Text style={styles.footerText}>Don't have an account? </Text>
+            <Button
+              title="Register"
+              onPress={() => navigation.navigate('Register')}
+              variant="secondary"
+              style={styles.registerButton}
+            />
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }

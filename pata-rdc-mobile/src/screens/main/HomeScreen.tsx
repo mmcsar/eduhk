@@ -1,13 +1,16 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
 import { Button } from '../../components/Button';
 import { useAuthStore } from '../../store/authStore';
+import { AuthContext } from '../../context/AuthContext';
 
 export default function HomeScreen() {
   const { user, logout } = useAuthStore();
+  const { signOut } = useContext(AuthContext);
 
   const handleLogout = () => {
-    logout();
+    // signOut clears SecureStore and resets Zustand
+    signOut().catch(() => logout());
   };
 
   return (

@@ -8,8 +8,12 @@ import {
   SafeAreaView,
 } from 'react-native';
 import { Button } from '../../components/Button';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import type { AuthStackParamList } from '../../types/navigation';
 
-export default function RegisterScreen({ navigation }: any) {
+type Props = NativeStackScreenProps<AuthStackParamList, 'Register'>;
+
+export default function RegisterScreen({ navigation }: Props) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [firstName, setFirstName] = useState('');

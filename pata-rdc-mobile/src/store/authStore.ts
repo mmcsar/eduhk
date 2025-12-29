@@ -1,12 +1,13 @@
 import { create } from 'zustand';
+import type { User } from '../types/auth';
 
 interface AuthStore {
-  user: any | null;
+  user: User | null;
   isLoading: boolean;
   userToken: string | null;
 
-  setUser: (user: any) => void;
-  setToken: (token: string) => void;
+  setUser: (user: User | null) => void;
+  setToken: (token: string | null) => void;
   logout: () => void;
   setLoading: (loading: boolean) => void;
 }
