@@ -2,6 +2,15 @@
 
 Prototype **Next.js 15.5.9** inspiré de DAT (load board), adapté à la RDC avec focus **Haut‑Katanga** & **Lualaba**.
 
+### Docs
+
+- `docs/ARCHITECTURE.md`
+- `docs/API.md`
+- `docs/SCHEMA.md`
+- `docs/SECURITY.md`
+- `docs/DEPLOY.md`
+- `docs/CONTRIBUTING.md`
+
 ## Getting Started
 
 First, run the development server:
