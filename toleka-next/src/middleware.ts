@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { sessionCookieName, verifySession } from "@/lib/auth";
+import { sessionCookieName, verifySession } from "@/lib/jwt";
 
 const PUBLIC_PATHS = ["/login", "/api/health", "/api/loadboard"];
 
