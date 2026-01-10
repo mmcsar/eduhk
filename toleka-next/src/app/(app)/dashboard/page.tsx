@@ -51,6 +51,14 @@ export default function DashboardPage() {
           Trouve des opportunités de fret au départ / vers le Haut‑Katanga et le
           Lualaba.
         </div>
+        <div className="mt-4 flex flex-wrap gap-2">
+          <Link className="toleka-btn" href="/loads/new">
+            Poster un load
+          </Link>
+          <Link className="toleka-btn-secondary" href="/loadboard">
+            Voir le loadboard public
+          </Link>
+        </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">
@@ -62,10 +70,9 @@ export default function DashboardPage() {
         />
         <ActionCard
           title="Poster un load"
-          description="Publier une charge (à ajouter plus tard)."
-          href="/loads"
+          description="Publier une charge (réel) — apparaît sur le loadboard public."
+          href="/loads/new"
           cta="Post Load"
-          disabled
         />
         <ActionCard
           title="Trouver des camions"

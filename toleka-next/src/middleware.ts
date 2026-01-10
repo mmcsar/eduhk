@@ -3,6 +3,8 @@ import { sessionCookieName, verifySession } from "@/lib/jwt";
 
 const PUBLIC_PATHS = [
   "/login",
+  "/register",
+  "/loadboard",
   "/api/health",
   "/api/loadboard",
   "/api/hubspot/webhook",
