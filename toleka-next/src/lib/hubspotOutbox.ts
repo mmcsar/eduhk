@@ -1,6 +1,11 @@
 import { prisma } from "@/lib/prisma";
 import { upsertContact, type HubSpotContactUpsert } from "@/lib/hubspot";
-import { createDeal, updateDeal, type HubSpotDealUpsert } from "@/lib/hubspotDeals";
+import {
+  associateDealToContact,
+  createDeal,
+  updateDeal,
+  type HubSpotDealUpsert,
+} from "@/lib/hubspotDeals";
 import { Prisma } from "@prisma/client";
 
 export async function enqueueHubspotJob(params: {
@@ -28,9 +33,10 @@ export async function enqueueHubspotJob(params: {
 
 export async function processHubspotJobs(params?: { limit?: number }) {
   const limit = params?.limit ?? 25;
+  const maxAttempts = 5;
 
   const jobs = await prisma.hubspotOutbox.findMany({
-    where: { status: "PENDING" },
+    where: { status: { in: ["PENDING", "FAILED"] }, attempts: { lt: maxAttempts } },
     orderBy: { createdAt: "asc" },
     take: limit,
   });
@@ -62,6 +68,7 @@ export async function processHubspotJobs(params?: { limit?: number }) {
         const payload = job.payload as unknown as HubSpotDealUpsert & {
           loadId?: string;
           dealId?: string;
+          contactId?: string;
         };
 
         const dealId = payload.dealId;
@@ -71,6 +78,10 @@ export async function processHubspotJobs(params?: { limit?: number }) {
             where: { id: payload.loadId },
             data: { hubspotDealId: result.id },
           });
+        }
+
+        if (result.ok && result.id && payload.contactId) {
+          await associateDealToContact({ dealId: result.id, contactId: payload.contactId });
         }
       }
 

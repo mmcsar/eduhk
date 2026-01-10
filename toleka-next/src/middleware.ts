@@ -7,6 +7,7 @@ const PUBLIC_PATHS = [
   "/api/loadboard",
   "/api/hubspot/webhook",
   "/api/hubspot/status",
+  "/api/hubspot/sync/cron",
 ];
 
 export async function middleware(req: NextRequest) {

@@ -12,6 +12,24 @@ export type HubSpotDealUpsert = {
   tenant_id?: string;
 };
 
+export async function associateDealToContact(params: {
+  dealId: string;
+  contactId: string;
+}) {
+  const hs = hubspotClient();
+  if (!hs) return { ok: false as const, reason: "HUBSPOT_NOT_CONFIGURED" };
+
+  // Default association between deal and contact
+  await hs.crm.associations.v4.basicApi.create(
+    "deals",
+    params.dealId,
+    "contacts",
+    params.contactId,
+    [],
+  );
+  return { ok: true as const };
+}
+
 export async function createDeal(input: HubSpotDealUpsert) {
   const hs = hubspotClient();
   if (!hs) return { ok: false as const, reason: "HUBSPOT_NOT_CONFIGURED" };

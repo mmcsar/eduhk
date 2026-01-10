@@ -2,7 +2,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 import { jsonError, ApiError } from "@/lib/http";
-import { createDeal } from "@/lib/hubspotDeals";
+import { associateDealToContact, createDeal } from "@/lib/hubspotDeals";
 import { enqueueHubspotJob } from "@/lib/hubspotOutbox";
 
 const CreateLoadSchema = z.object({
@@ -54,32 +54,16 @@ export async function POST(req: Request) {
       },
     });
 
-    // Best-effort HubSpot Deal sync. If it fails, queue it for retry.
-    try {
-      const res = await createDeal({
-        dealname: `Load ${created.originCity} → ${created.destinationCity}`,
-        amount: created.rateUsd ?? undefined,
-        tenant_id: created.tenantId,
-        pickup_city: created.originCity,
-        delivery_city: created.destinationCity,
-        equipment: created.equipment,
-        tracking_number: created.id,
-        pipeline: process.env.HUBSPOT_DEAL_PIPELINE_ID || undefined,
-        dealstage: process.env.HUBSPOT_DEAL_STAGE_POSTED || undefined,
+    // HubSpot Deal sync only when publicly posted
+    if (created.status === "POSTED") {
+      const actor = await prisma.user.findUnique({
+        where: { id: session.userId },
+        select: { hubspotContactId: true },
       });
-      if (res.ok && res.id) {
-        await prisma.load.update({
-          where: { id: created.id },
-          data: { hubspotDealId: res.id },
-        });
-      }
-    } catch (e) {
-      const msg = e instanceof Error ? e.message : "HubSpot deal sync failed";
-      await enqueueHubspotJob({
-        tenantId: created.tenantId,
-        type: "DEAL_UPSERT",
-        payload: {
-          loadId: created.id,
+
+      // Best-effort HubSpot Deal sync. If it fails, queue it for retry.
+      try {
+        const res = await createDeal({
           dealname: `Load ${created.originCity} → ${created.destinationCity}`,
           amount: created.rateUsd ?? undefined,
           tenant_id: created.tenantId,
@@ -89,9 +73,41 @@ export async function POST(req: Request) {
           tracking_number: created.id,
           pipeline: process.env.HUBSPOT_DEAL_PIPELINE_ID || undefined,
           dealstage: process.env.HUBSPOT_DEAL_STAGE_POSTED || undefined,
-        },
-        lastError: msg,
-      });
+        });
+        if (res.ok && res.id) {
+          await prisma.load.update({
+            where: { id: created.id },
+            data: { hubspotDealId: res.id },
+          });
+
+          if (actor?.hubspotContactId) {
+            await associateDealToContact({
+              dealId: res.id,
+              contactId: actor.hubspotContactId,
+            });
+          }
+        }
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : "HubSpot deal sync failed";
+        await enqueueHubspotJob({
+          tenantId: created.tenantId,
+          type: "DEAL_UPSERT",
+          payload: {
+            loadId: created.id,
+            contactId: actor?.hubspotContactId ?? undefined,
+            dealname: `Load ${created.originCity} → ${created.destinationCity}`,
+            amount: created.rateUsd ?? undefined,
+            tenant_id: created.tenantId,
+            pickup_city: created.originCity,
+            delivery_city: created.destinationCity,
+            equipment: created.equipment,
+            tracking_number: created.id,
+            pipeline: process.env.HUBSPOT_DEAL_PIPELINE_ID || undefined,
+            dealstage: process.env.HUBSPOT_DEAL_STAGE_POSTED || undefined,
+          },
+          lastError: msg,
+        });
+      }
     }
 
     return Response.json({ data: created }, { status: 201 });
