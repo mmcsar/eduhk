@@ -2,6 +2,8 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 import { jsonError, ApiError } from "@/lib/http";
+import { createDeal } from "@/lib/hubspotDeals";
+import { enqueueHubspotJob } from "@/lib/hubspotOutbox";
 
 const CreateLoadSchema = z.object({
   status: z.enum(["DRAFT", "POSTED"]).default("POSTED"),
@@ -51,6 +53,46 @@ export async function POST(req: Request) {
         notes: body.notes,
       },
     });
+
+    // Best-effort HubSpot Deal sync. If it fails, queue it for retry.
+    try {
+      const res = await createDeal({
+        dealname: `Load ${created.originCity} → ${created.destinationCity}`,
+        amount: created.rateUsd ?? undefined,
+        tenant_id: created.tenantId,
+        pickup_city: created.originCity,
+        delivery_city: created.destinationCity,
+        equipment: created.equipment,
+        tracking_number: created.id,
+        pipeline: process.env.HUBSPOT_DEAL_PIPELINE_ID || undefined,
+        dealstage: process.env.HUBSPOT_DEAL_STAGE_POSTED || undefined,
+      });
+      if (res.ok && res.id) {
+        await prisma.load.update({
+          where: { id: created.id },
+          data: { hubspotDealId: res.id },
+        });
+      }
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "HubSpot deal sync failed";
+      await enqueueHubspotJob({
+        tenantId: created.tenantId,
+        type: "DEAL_UPSERT",
+        payload: {
+          loadId: created.id,
+          dealname: `Load ${created.originCity} → ${created.destinationCity}`,
+          amount: created.rateUsd ?? undefined,
+          tenant_id: created.tenantId,
+          pickup_city: created.originCity,
+          delivery_city: created.destinationCity,
+          equipment: created.equipment,
+          tracking_number: created.id,
+          pipeline: process.env.HUBSPOT_DEAL_PIPELINE_ID || undefined,
+          dealstage: process.env.HUBSPOT_DEAL_STAGE_POSTED || undefined,
+        },
+        lastError: msg,
+      });
+    }
 
     return Response.json({ data: created }, { status: 201 });
   } catch (e) {

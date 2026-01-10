@@ -29,6 +29,18 @@ enum LoadStatus {
   COMPLETED
 }
 
+enum HubspotJobType {
+  CONTACT_UPSERT
+  DEAL_UPSERT
+}
+
+enum HubspotJobStatus {
+  PENDING
+  PROCESSING
+  DONE
+  FAILED
+}
+
 model Tenant {
   id        String   @id @default(cuid())
   name      String
@@ -37,6 +49,7 @@ model Tenant {
   memberships   Membership[]
   subscriptions Subscription[]
   loads         Load[]
+  hubspotJobs   HubspotOutbox[]
 
   @@index([createdAt])
 }
@@ -47,6 +60,7 @@ model User {
   phone        String?
   passwordHash String
   status       String   @default("ACTIVE")
+  hubspotContactId String?
   createdAt    DateTime @default(now())
 
   memberships Membership[]
@@ -102,6 +116,8 @@ model Load {
   exactAddress       String?
   notes              String?
 
+  hubspotDealId      String?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -110,5 +126,22 @@ model Load {
   @@index([status, createdAt])
   @@index([originCity, destinationCity])
   @@index([tenantId])
+}
+
+model HubspotOutbox {
+  id        String           @id @default(cuid())
+  tenantId  String
+  type      HubspotJobType
+  status    HubspotJobStatus @default(PENDING)
+  attempts  Int              @default(0)
+  payload   Json
+  lastError String?
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, status, createdAt])
+  @@index([type, status])
 }
 

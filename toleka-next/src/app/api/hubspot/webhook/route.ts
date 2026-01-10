@@ -1,5 +1,7 @@
 import { verifyHubSpotSignatureV3 } from "@/lib/hubspotWebhook";
 
+export const runtime = "nodejs";
+
 export async function POST(req: Request) {
   const secret = process.env.HUBSPOT_WEBHOOK_SECRET?.trim();
   const rawBody = await req.text();

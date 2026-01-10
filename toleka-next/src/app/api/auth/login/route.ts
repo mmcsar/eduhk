@@ -4,6 +4,8 @@ import { jsonError } from "@/lib/http";
 import { sessionCookieName, signSession, verifyPassword } from "@/lib/auth";
 import { cookies } from "next/headers";
 
+export const runtime = "nodejs";
+
 const LoginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(1),

@@ -4,6 +4,9 @@ import { hashPassword, sessionCookieName, signSession } from "@/lib/auth";
 import { jsonError } from "@/lib/http";
 import { cookies } from "next/headers";
 import { upsertContact } from "@/lib/hubspot";
+import { enqueueHubspotJob } from "@/lib/hubspotOutbox";
+
+export const runtime = "nodejs";
 
 const RegisterSchema = z.object({
   tenantName: z.string().min(2).max(120),
@@ -74,13 +77,35 @@ export async function POST(req: Request) {
       maxAge: 60 * 60 * 24 * 7,
     });
 
-    // Best-effort HubSpot sync (non-blocking for MVP)
-    upsertContact({
-      email: created.user.email,
-      company: created.tenant.name,
-      user_role: created.membership.role,
-      tenant_id: created.tenant.id,
-    }).catch(() => {});
+    // Best-effort HubSpot sync (no hard dependency)
+    try {
+      const res = await upsertContact({
+        email: created.user.email,
+        company: created.tenant.name,
+        user_role: created.membership.role,
+        tenant_id: created.tenant.id,
+      });
+      if (res.ok && res.id) {
+        await prisma.user.update({
+          where: { id: created.user.id },
+          data: { hubspotContactId: res.id },
+        });
+      }
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "HubSpot contact sync failed";
+      await enqueueHubspotJob({
+        tenantId: created.tenant.id,
+        type: "CONTACT_UPSERT",
+        payload: {
+          userId: created.user.id,
+          email: created.user.email,
+          company: created.tenant.name,
+          user_role: created.membership.role,
+          tenant_id: created.tenant.id,
+        },
+        lastError: msg,
+      });
+    }
 
     return Response.json({
       user: { id: created.user.id, email: created.user.email },
