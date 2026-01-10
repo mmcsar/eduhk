@@ -4,6 +4,7 @@ import { getSession } from "@/lib/session";
 import { jsonError, ApiError } from "@/lib/http";
 import { associateDealToContact, createDeal } from "@/lib/hubspotDeals";
 import { enqueueHubspotJob } from "@/lib/hubspotOutbox";
+import { withRls } from "@/lib/rls";
 
 const CreateLoadSchema = z.object({
   status: z.enum(["DRAFT", "POSTED"]).default("POSTED"),
@@ -27,31 +28,51 @@ export async function POST(req: Request) {
     const session = await getSession();
     if (!session) throw new ApiError("UNAUTHORIZED", 401, "Login required");
 
-    const active = await prisma.subscription.findFirst({
-      where: { tenantId: session.tenantId, status: "ACTIVE" },
-      select: { id: true },
-    });
-    if (!active) throw new ApiError("PAYWALL", 402, "Active subscription required");
-
     const body = CreateLoadSchema.parse(await req.json());
-    const created = await prisma.load.create({
-      data: {
-        tenantId: session.tenantId,
-        status: body.status,
-        originProvince: body.originProvince,
-        originCity: body.originCity,
-        destinationProvince: body.destinationProvince,
-        destinationCity: body.destinationCity,
-        equipment: body.equipment,
-        lengthFt: body.lengthFt,
-        weightKg: body.weightKg,
-        rateUsd: body.rateUsd,
-        contactName: body.contactName,
-        contactPhone: body.contactPhone,
-        companyName: body.companyName,
-        exactAddress: body.exactAddress,
-        notes: body.notes,
-      },
+    const created = await withRls(session, async (tx) => {
+      const active = await tx.subscription.findFirst({
+        where: { tenantId: session.tenantId, status: "ACTIVE" },
+        select: { id: true },
+      });
+      if (!active) throw new ApiError("PAYWALL", 402, "Active subscription required");
+
+      const load = await tx.load.create({
+        data: {
+          tenantId: session.tenantId,
+          status: body.status,
+          originProvince: body.originProvince,
+          originCity: body.originCity,
+          destinationProvince: body.destinationProvince,
+          destinationCity: body.destinationCity,
+          equipment: body.equipment,
+          lengthFt: body.lengthFt,
+          weightKg: body.weightKg,
+          rateUsd: body.rateUsd,
+          contactName: body.contactName,
+          contactPhone: body.contactPhone,
+          companyName: body.companyName,
+          exactAddress: body.exactAddress,
+          notes: body.notes,
+        },
+      });
+
+      if (load.status === "POSTED") {
+        await tx.loadPublicListing.create({
+          data: {
+            loadId: load.id,
+            status: load.status,
+            originProvince: load.originProvince,
+            originCity: load.originCity,
+            destinationProvince: load.destinationProvince,
+            destinationCity: load.destinationCity,
+            equipment: load.equipment,
+            lengthFt: load.lengthFt,
+            weightKg: load.weightKg,
+          },
+        });
+      }
+
+      return load;
     });
 
     // HubSpot Deal sync only when publicly posted
@@ -121,11 +142,13 @@ export async function GET() {
     const session = await getSession();
     if (!session) throw new ApiError("UNAUTHORIZED", 401, "Login required");
 
-    const loads = await prisma.load.findMany({
-      where: { tenantId: session.tenantId },
-      orderBy: { createdAt: "desc" },
-      take: 50,
-    });
+    const loads = await withRls(session, async (tx) =>
+      tx.load.findMany({
+        where: { tenantId: session.tenantId },
+        orderBy: { createdAt: "desc" },
+        take: 50,
+      }),
+    );
     return Response.json({ data: loads });
   } catch (e) {
     return jsonError(e);

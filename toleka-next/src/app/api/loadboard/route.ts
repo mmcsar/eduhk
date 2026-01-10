@@ -52,7 +52,8 @@ export async function GET(req: Request) {
     limit: url.searchParams.get("limit") ?? undefined,
   });
 
-  const loads = await prisma.load.findMany({
+  // Public listing table (no sensitive fields, safe for anonymous users)
+  const loads = await prisma.loadPublicListing.findMany({
     where: {
       status: "POSTED",
       originCity: parsed.originCity ? { contains: parsed.originCity, mode: "insensitive" } : undefined,
@@ -66,7 +67,6 @@ export async function GET(req: Request) {
     orderBy: { createdAt: "desc" },
     take: parsed.limit,
     select: {
-      id: true,
       status: true,
       originProvince: true,
       originCity: true,
@@ -76,9 +76,25 @@ export async function GET(req: Request) {
       lengthFt: true,
       weightKg: true,
       createdAt: true,
+      loadId: true,
     },
   });
 
-  return Response.json({ data: loads.map(mask) });
+  return Response.json({
+    data: loads.map((l) =>
+      mask({
+        id: l.loadId,
+        status: l.status,
+        originProvince: l.originProvince,
+        originCity: l.originCity,
+        destinationProvince: l.destinationProvince,
+        destinationCity: l.destinationCity,
+        equipment: l.equipment,
+        lengthFt: l.lengthFt,
+        weightKg: l.weightKg,
+        createdAt: l.createdAt,
+      }),
+    ),
+  });
 }
 

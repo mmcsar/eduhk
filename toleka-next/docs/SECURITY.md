@@ -14,9 +14,15 @@
   - `app.tenant_id`
   - `app.user_id`
   - `app.user_role`
+  - `app.plan_active` (abonnement actif → lecture des loads POSTED cross-tenant)
 - policies:
   - lecture/écriture limitée au `tenant_id`
   - exceptions admin contrôlées
+
+### Loadboard public (anti fuite)
+
+- les visiteurs non abonnés lisent uniquement `LoadPublicListing` (données non sensibles)
+- les abonnés lisent `Load` (RLS) pour accéder aux détails complets des loads POSTED
 
 ### Webhooks
 

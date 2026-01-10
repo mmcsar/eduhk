@@ -122,10 +122,31 @@ model Load {
   updatedAt DateTime @updatedAt
 
   tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  publicListing LoadPublicListing?
 
   @@index([status, createdAt])
   @@index([originCity, destinationCity])
   @@index([tenantId])
+}
+
+model LoadPublicListing {
+  id                  String     @id @default(cuid())
+  loadId              String     @unique
+  status              LoadStatus @default(POSTED)
+  originProvince      String
+  originCity          String
+  destinationProvince String
+  destinationCity     String
+  equipment           String
+  lengthFt            Int
+  weightKg            Int
+  createdAt           DateTime   @default(now())
+  updatedAt           DateTime   @updatedAt
+
+  load Load @relation(fields: [loadId], references: [id], onDelete: Cascade)
+
+  @@index([status, createdAt])
+  @@index([originCity, destinationCity])
 }
 
 model HubspotOutbox {
