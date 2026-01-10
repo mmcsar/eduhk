@@ -2,7 +2,17 @@ import { Container } from "@/components/Container";
 import Link from "next/link";
 import { LoadboardClient } from "@/app/loadboard/LoadboardClient";
 
-export default function LoadboardPage() {
+export default async function LoadboardPage({
+  searchParams,
+}: {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const sp = (await searchParams) ?? {};
+  const initial: Record<string, string> = {};
+  for (const [k, v] of Object.entries(sp)) {
+    if (typeof v === "string") initial[k] = v;
+  }
+
   return (
     <div className="min-h-dvh">
       <header className="border-b border-slate-200 bg-white">
@@ -34,7 +44,7 @@ export default function LoadboardPage() {
 
       <main className="py-6">
         <Container>
-          <LoadboardClient />
+          <LoadboardClient initial={initial} />
         </Container>
       </main>
     </div>

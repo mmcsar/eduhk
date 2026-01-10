@@ -50,16 +50,16 @@ export function TopNav() {
         <nav className="flex items-center gap-1">
           <NavLink href="/dashboard" label="Accueil" />
           <NavLink href="/loads" label="Trouver des loads" />
+          <NavLink href="/saved-searches" label="Recherches" />
           <button
             type="button"
             className="ml-2 rounded-md px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100 hover:text-slate-900"
             onClick={() => {
-              try {
-                localStorage.removeItem("toleka_demo_user");
-              } catch {
-                // ignore
-              }
-              router.push("/login");
+              fetch("/api/auth/logout", { method: "POST" })
+                .catch(() => {})
+                .finally(() => {
+                  router.push("/login");
+                });
             }}
           >
             Déconnexion

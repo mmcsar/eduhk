@@ -60,6 +60,7 @@ export async function POST(req: Request) {
         await tx.loadPublicListing.create({
           data: {
             loadId: load.id,
+            tenantId: load.tenantId,
             status: load.status,
             originProvince: load.originProvince,
             originCity: load.originCity,
