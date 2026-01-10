@@ -1,0 +1,114 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  BROKER
+  DISPATCHER
+  DRIVER
+  TENANT_ADMIN
+  PLATFORM_ADMIN
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  PAST_DUE
+  CANCELED
+}
+
+enum LoadStatus {
+  DRAFT
+  POSTED
+  BOOKED
+  CANCELLED
+  COMPLETED
+}
+
+model Tenant {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+
+  memberships   Membership[]
+  subscriptions Subscription[]
+  loads         Load[]
+
+  @@index([createdAt])
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  phone        String?
+  passwordHash String
+  status       String   @default("ACTIVE")
+  createdAt    DateTime @default(now())
+
+  memberships Membership[]
+
+  @@index([createdAt])
+}
+
+model Membership {
+  id        String   @id @default(cuid())
+  tenantId  String
+  userId    String
+  role      UserRole @default(BROKER)
+  createdAt DateTime @default(now())
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, userId])
+  @@index([tenantId])
+  @@index([userId])
+}
+
+model Subscription {
+  id               String             @id @default(cuid())
+  tenantId         String
+  plan             String
+  status           SubscriptionStatus @default(ACTIVE)
+  currentPeriodEnd DateTime?
+  createdAt        DateTime           @default(now())
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, status])
+}
+
+model Load {
+  id                String     @id @default(cuid())
+  tenantId           String
+  status             LoadStatus @default(POSTED)
+  originProvince     String
+  originCity         String
+  destinationProvince String
+  destinationCity     String
+  equipment          String
+  lengthFt           Int
+  weightKg           Int
+
+  // Private fields (paywalled)
+  rateUsd            Int?
+  contactName        String?
+  contactPhone       String?
+  companyName        String?
+  exactAddress       String?
+  notes              String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([status, createdAt])
+  @@index([originCity, destinationCity])
+  @@index([tenantId])
+}
+
