@@ -1,7 +1,13 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { sessionCookieName, verifySession } from "@/lib/jwt";
 
-const PUBLIC_PATHS = ["/login", "/api/health", "/api/loadboard"];
+const PUBLIC_PATHS = [
+  "/login",
+  "/api/health",
+  "/api/loadboard",
+  "/api/hubspot/webhook",
+  "/api/hubspot/status",
+];
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;

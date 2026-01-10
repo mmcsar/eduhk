@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { hashPassword, sessionCookieName, signSession } from "@/lib/auth";
 import { jsonError } from "@/lib/http";
 import { cookies } from "next/headers";
+import { upsertContact } from "@/lib/hubspot";
 
 const RegisterSchema = z.object({
   tenantName: z.string().min(2).max(120),
@@ -72,6 +73,14 @@ export async function POST(req: Request) {
       path: "/",
       maxAge: 60 * 60 * 24 * 7,
     });
+
+    // Best-effort HubSpot sync (non-blocking for MVP)
+    upsertContact({
+      email: created.user.email,
+      company: created.tenant.name,
+      user_role: created.membership.role,
+      tenant_id: created.tenant.id,
+    }).catch(() => {});
 
     return Response.json({
       user: { id: created.user.id, email: created.user.email },
