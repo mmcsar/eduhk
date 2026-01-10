@@ -342,12 +342,20 @@ export function LoadboardClient({ initial }: { initial: Record<string, string> }
                   verrouillés (abonnement requis)
                 </div>
                 <div className="flex gap-2">
-                  <Link className="toleka-btn-secondary" href="/login">
-                    Se connecter
-                  </Link>
-                  <Link className="toleka-btn" href="/register">
-                    Débloquer
-                  </Link>
+                  {me?.user ? (
+                    <Link className="toleka-btn" href={`/loads/${l.id}`}>
+                      Voir détails
+                    </Link>
+                  ) : (
+                    <>
+                      <Link className="toleka-btn-secondary" href="/login">
+                        Se connecter
+                      </Link>
+                      <Link className="toleka-btn" href="/register">
+                        Débloquer
+                      </Link>
+                    </>
+                  )}
                 </div>
               </div>
             </div>

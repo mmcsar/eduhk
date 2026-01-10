@@ -30,6 +30,13 @@ enum LoadStatus {
   COMPLETED
 }
 
+enum BidStatus {
+  SUBMITTED
+  ACCEPTED
+  REJECTED
+  WITHDRAWN
+}
+
 enum HubspotJobType {
   CONTACT_UPSERT
   DEAL_UPSERT
@@ -53,6 +60,7 @@ model Tenant {
   loadPublicListings LoadPublicListing[]
   hubspotJobs   HubspotOutbox[]
   savedSearches SavedSearch[]
+  bids          Bid[]
 
   @@index([createdAt])
 }
@@ -68,6 +76,7 @@ model User {
 
   memberships Membership[]
   savedSearches SavedSearch[]
+  bids         Bid[]
 
   @@index([createdAt])
 }
@@ -127,6 +136,7 @@ model Load {
 
   tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   publicListing LoadPublicListing?
+  bids          Bid[]
 
   @@index([status, createdAt])
   @@index([originCity, destinationCity])
@@ -154,6 +164,27 @@ model LoadPublicListing {
   @@index([status, createdAt])
   @@index([originCity, destinationCity])
   @@index([tenantId, status, createdAt])
+}
+
+model Bid {
+  id        String    @id @default(cuid())
+  loadId    String
+  tenantId  String
+  userId    String
+  status    BidStatus @default(SUBMITTED)
+  amountUsd Int?
+  message   String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  load   Load   @relation(fields: [loadId], references: [id], onDelete: Cascade)
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([loadId, createdAt])
+  @@index([tenantId, createdAt])
+  @@index([userId, createdAt])
+  @@index([status, createdAt])
 }
 
 model HubspotOutbox {
