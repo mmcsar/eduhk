@@ -1,10 +1,11 @@
 {
-  "name": "fretdrc-loadboard",
+  "name": "nazui",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "npx vite",
+    "start": "npx vite",
     "build": "npx tsc -b && npx vite build",
     "preview": "npx vite preview"
   },

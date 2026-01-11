@@ -8,9 +8,9 @@ import {
 } from "@tanstack/react-query";
 import { z } from "zod";
 
-// FretDRC — Web RDC — Load Board v7.3 (TypeScript-friendly, React Query, Zod, Drawer)
+// Nazui — Web RDC — Load Board v7.3 (TypeScript-friendly, React Query, Zod, Drawer)
 // Fixes: fully closed functions/blocks (saveView, etc.), onLoadMore uses fetchNextPage(), export intact.
-// Extras: runtime headers (window.__FRETDRC_HEADERS__), auto-logout on 401, self-tests.
+// Extras: runtime headers (window.__NAZUI_HEADERS__), auto-logout on 401, self-tests.
 
 /* ----------------------
    UI primitives
@@ -272,7 +272,7 @@ const Modal: React.FC<{
    i18n minimal (FR)
 ---------------------- */
 const t = {
-  app: "FretDRC",
+  app: "Nazui",
   top: { title: "TABLEAU DES LOADS – RDC" },
   newSearch: "NOUVELLE RECHERCHE",
   filters: {
@@ -316,7 +316,7 @@ const t = {
     bid: "Soumettre une offre"
   },
   login: {
-    title: "Bienvenue sur FretDRC",
+    title: "Bienvenue sur Nazui",
     email: "Email",
     pwd: "Mot de passe",
     remember: "Se souvenir de moi",
@@ -549,7 +549,7 @@ const LoadDetailSchema = z
 ---------------------- */
 function extraHeaders() {
   try {
-    return (window as any).__FRETDRC_HEADERS__ || {};
+    return (window as any).__NAZUI_HEADERS__ || {};
   } catch {
     return {};
   }
@@ -558,13 +558,13 @@ function extraHeaders() {
 function handle401(status: number) {
   if (status === 401) {
     try {
-      sessionStorage.removeItem("fretdrc.token");
-      localStorage.removeItem("fretdrc.token");
+      sessionStorage.removeItem("nazui.token");
+      localStorage.removeItem("nazui.token");
     } catch {
       // ignore
     }
     try {
-      window.dispatchEvent(new CustomEvent("fretdrc:unauthorized"));
+      window.dispatchEvent(new CustomEvent("nazui:unauthorized"));
     } catch {
       // ignore
     }
@@ -761,7 +761,7 @@ function ApiBar({
       <Input
         value={baseUrl}
         onChange={setBaseUrl}
-        placeholder="API base URL (ex: https://api.fretdrc.com)"
+        placeholder="API base URL (ex: https://api.nazui.com)"
         style={{ minWidth: 360 }}
       />
       <label style={{ fontSize: 13 }}>
@@ -1150,7 +1150,7 @@ function useLoadsQuery({
   token: string;
   state: any;
 }) {
-  const headers: Record<string, string> = { "X-Client": "FretDRC" };
+  const headers: Record<string, string> = { "X-Client": "Nazui" };
   if (token) headers.Authorization = `Bearer ${token}`;
 
   const fetchPage = async ({ pageParam }: { pageParam?: string }) => {
@@ -1214,7 +1214,7 @@ function useLoadDetail({
   token: string;
   id: string | undefined;
 }) {
-  const headers: Record<string, string> = { "X-Client": "FretDRC" };
+  const headers: Record<string, string> = { "X-Client": "Nazui" };
   if (token) headers.Authorization = `Bearer ${token}`;
   return useQuery({
     queryKey: ["load", baseUrl, id],
@@ -1250,7 +1250,7 @@ function useLoadDetail({
 }
 
 function useBidMutation({ baseUrl, token }: { baseUrl: string; token: string }) {
-  const headers: Record<string, string> = { "X-Client": "FretDRC" };
+  const headers: Record<string, string> = { "X-Client": "Nazui" };
   if (token) headers.Authorization = `Bearer ${token}`;
   return useMutation({
     mutationFn: async ({
@@ -1430,7 +1430,7 @@ function Results({
             Erreur: {String(error)}
           </span>
         )}
-        <Button kind="ghost" onClick={() => downloadCSV("fretdrc-loads.csv", sorted)}>
+        <Button kind="ghost" onClick={() => downloadCSV("nazui-loads.csv", sorted)}>
           ⬇ {t.actions.export}
         </Button>
       </Row>
@@ -1626,7 +1626,7 @@ function runSelfTestsOnce() {
     if (!parsed.success) throw new Error("Zod schema test failed");
   } catch (e) {
     // eslint-disable-next-line no-console
-    console.warn("[FretDRC self-tests] failed:", e);
+    console.warn("[Nazui self-tests] failed:", e);
   }
 }
 
@@ -1647,7 +1647,7 @@ type ViewSnapshot = {
 function AppInner() {
   runSelfTestsOnce();
 
-  const [dark, setDark] = useLocalStorage("fretdrc.dark", false);
+  const [dark, setDark] = useLocalStorage("nazui.dark", false);
   const [state, setState] = useState({
     tab: "ALL",
     equipment: "ANY",
@@ -1660,13 +1660,13 @@ function AppInner() {
     maxRate: "",
     searchBack: ""
   });
-  const [currency, setCurrency] = useLocalStorage("fretdrc.cur", "USD");
-  const [rate, setRate] = useLocalStorage("fretdrc.rate", "2800");
-  const [sort, setSort] = useLocalStorage<any[]>("fretdrc.sort", [{ key: "avail", dir: "asc" }]);
-  const [dense, setDense] = useLocalStorage("fretdrc.dense", false);
-  const [favs, setFavs] = useLocalStorage<string[]>("fretdrc.favs", []);
-  const [views, setViews] = useLocalStorage<ViewSnapshot[]>("fretdrc.views", []);
-  const [visibleCols, setVisibleCols] = useLocalStorage<Record<string, boolean>>("fretdrc.cols", {
+  const [currency, setCurrency] = useLocalStorage("nazui.cur", "USD");
+  const [rate, setRate] = useLocalStorage("nazui.rate", "2800");
+  const [sort, setSort] = useLocalStorage<any[]>("nazui.sort", [{ key: "avail", dir: "asc" }]);
+  const [dense, setDense] = useLocalStorage("nazui.dense", false);
+  const [favs, setFavs] = useLocalStorage<string[]>("nazui.favs", []);
+  const [views, setViews] = useLocalStorage<ViewSnapshot[]>("nazui.views", []);
+  const [visibleCols, setVisibleCols] = useLocalStorage<Record<string, boolean>>("nazui.cols", {
     id: true,
     age: true,
     avail: true,
@@ -1683,15 +1683,15 @@ function AppInner() {
     rateKm: true,
     fav: true
   });
-  const [baseUrl, setBaseUrl] = useLocalStorage("fretdrc.api", "");
-  const [useServerMetrics, setUseServerMetrics] = useLocalStorage("fretdrc.metricsServer", true);
+  const [baseUrl, setBaseUrl] = useLocalStorage("nazui.api", "");
+  const [useServerMetrics, setUseServerMetrics] = useLocalStorage("nazui.metricsServer", true);
 
   // Token with remember
   const [token, setTokenState] = useState(() => {
     try {
       return JSON.parse(
-        sessionStorage.getItem("fretdrc.token") ||
-          localStorage.getItem("fretdrc.token") ||
+        sessionStorage.getItem("nazui.token") ||
+          localStorage.getItem("nazui.token") ||
           '""'
       ) as string;
     } catch {
@@ -1700,13 +1700,13 @@ function AppInner() {
   });
   const writeToken = (tok: string, remember = true) => {
     try {
-      sessionStorage.removeItem("fretdrc.token");
-      localStorage.removeItem("fretdrc.token");
+      sessionStorage.removeItem("nazui.token");
+      localStorage.removeItem("nazui.token");
     } catch {
       // ignore
     }
     try {
-      (remember ? localStorage : sessionStorage).setItem("fretdrc.token", JSON.stringify(tok));
+      (remember ? localStorage : sessionStorage).setItem("nazui.token", JSON.stringify(tok));
     } catch {
       // ignore
     }
@@ -1716,8 +1716,8 @@ function AppInner() {
   // auto-logout on 401
   useEffect(() => {
     const onUnauth = () => setTokenState("");
-    window.addEventListener("fretdrc:unauthorized", onUnauth as any);
-    return () => window.removeEventListener("fretdrc:unauthorized", onUnauth as any);
+    window.addEventListener("nazui:unauthorized", onUnauth as any);
+    return () => window.removeEventListener("nazui:unauthorized", onUnauth as any);
   }, []);
 
   // URL ⇄ state sync
@@ -1901,7 +1901,7 @@ const queryClient = new QueryClient({
   }
 });
 
-export default function FretDRC() {
+export default function Nazui() {
   return (
     <QueryClientProvider client={queryClient}>
       <AppInner />
