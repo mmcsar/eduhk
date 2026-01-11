@@ -1,1 +1,1 @@
-{"root":["./src/FretDRCApp.tsx","./src/main.tsx"],"version":"5.9.3"}
+{"root":["./src/App.tsx","./src/main.tsx","./src/components/AddPropertyModal.tsx","./src/components/AdminDashboard.tsx","./src/components/AgentDashboard.tsx","./src/components/Login.tsx","./src/components/PropertyList.tsx","./src/lib/supabase.ts"],"version":"5.9.3"}
