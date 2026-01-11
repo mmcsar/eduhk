@@ -112,6 +112,7 @@ export async function POST(req: Request) {
       tenant: { id: created.tenant.id, name: created.tenant.name },
       role: created.membership.role,
       subscription: { status: created.subscription.status, plan: created.subscription.plan },
+      token,
     });
   } catch (e) {
     return jsonError(e);

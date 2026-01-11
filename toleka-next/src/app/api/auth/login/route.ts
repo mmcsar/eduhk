@@ -57,7 +57,8 @@ export async function POST(req: Request) {
       maxAge: 60 * 60 * 24 * 7,
     });
 
-    return Response.json({ ok: true });
+    // Return token as well for React Native clients (cookies are hard on mobile)
+    return Response.json({ ok: true, token });
   } catch (e) {
     return jsonError(e);
   }

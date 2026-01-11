@@ -32,7 +32,12 @@ export async function middleware(req: NextRequest) {
   }
 
   // Protect app routes + private APIs
-  const token = req.cookies.get(sessionCookieName())?.value;
+  const cookieToken = req.cookies.get(sessionCookieName())?.value;
+  const headerAuth = req.headers.get("authorization") ?? "";
+  const m = headerAuth.match(/^Bearer\s+(.+)$/i);
+  const bearerToken = m?.[1]?.trim();
+
+  const token = cookieToken ?? bearerToken ?? null;
   const session = token ? await verifySession(token) : null;
   if (!session) {
     if (pathname.startsWith("/api/")) {
