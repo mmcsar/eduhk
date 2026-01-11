@@ -1,0 +1,222 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum UserRole {
+  BROKER
+  DISPATCHER
+  DRIVER
+  TENANT_ADMIN
+  PLATFORM_ADMIN
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  PAST_DUE
+  CANCELED
+}
+
+enum LoadStatus {
+  DRAFT
+  POSTED
+  BOOKED
+  CANCELLED
+  COMPLETED
+}
+
+enum BidStatus {
+  SUBMITTED
+  ACCEPTED
+  REJECTED
+  WITHDRAWN
+}
+
+enum HubspotJobType {
+  CONTACT_UPSERT
+  DEAL_UPSERT
+}
+
+enum HubspotJobStatus {
+  PENDING
+  PROCESSING
+  DONE
+  FAILED
+}
+
+model Tenant {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+
+  memberships   Membership[]
+  subscriptions Subscription[]
+  loads         Load[]
+  loadPublicListings LoadPublicListing[]
+  hubspotJobs   HubspotOutbox[]
+  savedSearches SavedSearch[]
+  bids          Bid[]
+
+  @@index([createdAt])
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  phone        String?
+  passwordHash String
+  status       String   @default("ACTIVE")
+  hubspotContactId String?
+  createdAt    DateTime @default(now())
+
+  memberships Membership[]
+  savedSearches SavedSearch[]
+  bids         Bid[]
+
+  @@index([createdAt])
+}
+
+model Membership {
+  id        String   @id @default(cuid())
+  tenantId  String
+  userId    String
+  role      UserRole @default(BROKER)
+  createdAt DateTime @default(now())
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, userId])
+  @@index([tenantId])
+  @@index([userId])
+}
+
+model Subscription {
+  id               String             @id @default(cuid())
+  tenantId         String
+  plan             String
+  status           SubscriptionStatus @default(ACTIVE)
+  currentPeriodEnd DateTime?
+  createdAt        DateTime           @default(now())
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, status])
+}
+
+model Load {
+  id                String     @id @default(cuid())
+  tenantId           String
+  status             LoadStatus @default(POSTED)
+  originProvince     String
+  originCity         String
+  destinationProvince String
+  destinationCity     String
+  equipment          String
+  lengthFt           Int
+  weightKg           Int
+
+  // Private fields (paywalled)
+  rateUsd            Int?
+  contactName        String?
+  contactPhone       String?
+  companyName        String?
+  exactAddress       String?
+  notes              String?
+
+  hubspotDealId      String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  publicListing LoadPublicListing?
+  bids          Bid[]
+
+  @@index([status, createdAt])
+  @@index([originCity, destinationCity])
+  @@index([tenantId])
+}
+
+model LoadPublicListing {
+  id                  String     @id @default(cuid())
+  loadId              String     @unique
+  tenantId            String
+  status              LoadStatus @default(POSTED)
+  originProvince      String
+  originCity          String
+  destinationProvince String
+  destinationCity     String
+  equipment           String
+  lengthFt            Int
+  weightKg            Int
+  createdAt           DateTime   @default(now())
+  updatedAt           DateTime   @updatedAt
+
+  load Load @relation(fields: [loadId], references: [id], onDelete: Cascade)
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([status, createdAt])
+  @@index([originCity, destinationCity])
+  @@index([tenantId, status, createdAt])
+}
+
+model Bid {
+  id        String    @id @default(cuid())
+  loadId    String
+  tenantId  String
+  userId    String
+  status    BidStatus @default(SUBMITTED)
+  amountUsd Int?
+  message   String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  load   Load   @relation(fields: [loadId], references: [id], onDelete: Cascade)
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([loadId, createdAt])
+  @@index([tenantId, createdAt])
+  @@index([userId, createdAt])
+  @@index([status, createdAt])
+}
+
+model HubspotOutbox {
+  id        String           @id @default(cuid())
+  tenantId  String
+  type      HubspotJobType
+  status    HubspotJobStatus @default(PENDING)
+  attempts  Int              @default(0)
+  payload   Json
+  lastError String?
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, status, createdAt])
+  @@index([type, status])
+}
+
+model SavedSearch {
+  id        String   @id @default(cuid())
+  tenantId  String
+  userId    String
+  name      String
+  criteria  Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, userId, createdAt])
+  @@unique([userId, name])
+}
+

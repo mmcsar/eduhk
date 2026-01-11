@@ -1,0 +1,23 @@
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: toleka
+      POSTGRES_USER: toleka
+      POSTGRES_PASSWORD: toleka
+    ports:
+      - "5432:5432"
+    volumes:
+      - toleka_pg:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+    volumes:
+      - toleka_redis:/data
+
+volumes:
+  toleka_pg:
+  toleka_redis:
+
