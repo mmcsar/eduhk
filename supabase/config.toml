@@ -1,0 +1,45 @@
+# MMC Immo - Configuration Supabase Local
+# Documentation: https://supabase.com/docs/guides/cli/config
+
+[api]
+# Port for the API server
+port = 54321
+# Schemas to expose
+schemas = ["public", "storage"]
+
+[db]
+# Port for the database
+port = 54322
+# Password for the database (change in production!)
+password = "postgres"
+
+[studio]
+# Port for Supabase Studio
+port = 54323
+
+[auth]
+# Site URL (for email confirmation links)
+site_url = "http://localhost:3000"
+# Additional redirect URLs
+additional_redirect_urls = ["http://localhost:3000"]
+
+[auth.email]
+# Enable email auth
+enable_signup = true
+double_confirm_changes = true
+enable_confirmations = false
+
+[auth.external.google]
+enabled = false
+
+[storage]
+# Maximum file size (5MB for property images)
+file_size_limit = "5MB"
+
+[realtime]
+# Enable realtime for properties and notifications
+enabled = true
+
+# Local development specific settings
+[local]
+enabled = true
