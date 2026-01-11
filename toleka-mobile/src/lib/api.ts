@@ -1,6 +1,10 @@
 import { getToken } from "./storage";
+import Constants from "expo-constants";
 
-const BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL || "http://localhost:3000";
+const BASE_URL =
+  process.env.EXPO_PUBLIC_API_BASE_URL ||
+  (Constants.expoConfig?.extra?.apiBaseUrl as string | undefined) ||
+  "http://localhost:3000";
 
 export class ApiError extends Error {
   status: number;
