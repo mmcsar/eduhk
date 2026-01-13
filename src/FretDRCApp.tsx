@@ -273,6 +273,7 @@ const Modal: React.FC<{
 ---------------------- */
 const t = {
   app: "FretDRC",
+  greeting: "Salut coach",
   top: { title: "TABLEAU DES LOADS – RDC" },
   newSearch: "NOUVELLE RECHERCHE",
   filters: {
@@ -685,6 +686,7 @@ function TopBar({ dark, setDark, dense, setDense, onLogout, token }: {
   return (
     <Row gap={10} wrap style={{ marginBottom: 12 }}>
       <strong>{t.app}</strong>
+      <span style={{ opacity: 0.85 }}>{t.greeting}</span>
       <span style={{ opacity: 0.7 }}>{t.top.title}</span>
       <div style={{ flex: 1 }} />
       <Button kind="ghost" onClick={() => setDense(!dense)}>
