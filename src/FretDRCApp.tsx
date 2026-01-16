@@ -7,6 +7,7 @@ import {
   useMutation
 } from "@tanstack/react-query";
 import { z } from "zod";
+import { isSupabaseConfigured, supabase } from "./supabaseClient";
 
 // FretDRC — Web RDC — Load Board v7.3 (TypeScript-friendly, React Query, Zod, Drawer)
 // Fixes: fully closed functions/blocks (saveView, etc.), onLoadMore uses fetchNextPage(), export intact.
@@ -784,6 +785,133 @@ function ApiBar({
         {apiOk ? "✅ API" : "🔌 Tester API"}
       </Button>
     </Row>
+  );
+}
+
+function SupabaseAuthPanel({ dark }: { dark: boolean }) {
+  const [email, setEmail] = useState("");
+  const [userEmail, setUserEmail] = useState<string>("");
+  const [status, setStatus] = useState<string>("");
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    if (!supabase) return;
+    let cancelled = false;
+
+    supabase.auth
+      .getUser()
+      .then(({ data, error }) => {
+        if (cancelled) return;
+        if (error) {
+          setUserEmail("");
+          return;
+        }
+        setUserEmail(data.user?.email ?? "");
+      })
+      .catch(() => {
+        if (!cancelled) setUserEmail("");
+      });
+
+    const { data } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUserEmail(session?.user?.email ?? "");
+    });
+
+    return () => {
+      cancelled = true;
+      data.subscription.unsubscribe();
+    };
+  }, []);
+
+  const sendMagicLink = async () => {
+    if (!supabase) return;
+    if (!email.trim()) {
+      setStatus("Entrez un email.");
+      return;
+    }
+    try {
+      setBusy(true);
+      setStatus("Envoi du lien…");
+      const { error } = await supabase.auth.signInWithOtp({
+        email: email.trim(),
+        options: { emailRedirectTo: window.location.origin }
+      });
+      if (error) throw error;
+      setStatus("Lien envoyé. Vérifiez votre email (ou spam).");
+    } catch (e: any) {
+      setStatus(`Erreur: ${e?.message || String(e)}`);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const signOut = async () => {
+    if (!supabase) return;
+    try {
+      setBusy(true);
+      setStatus("");
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      setStatus("Déconnecté.");
+    } catch (e: any) {
+      setStatus(`Erreur: ${e?.message || String(e)}`);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <Panel dark={dark} style={{ marginTop: 12 }}>
+      <Row gap={8} wrap>
+        <strong>Supabase</strong>
+        {!isSupabaseConfigured ? (
+          <Badge kind="warn">Non configuré</Badge>
+        ) : userEmail ? (
+          <Badge kind="ok">Connecté</Badge>
+        ) : (
+          <Badge kind="info">Prêt</Badge>
+        )}
+        <div style={{ flex: 1 }} />
+        {isSupabaseConfigured && userEmail && (
+          <Button kind="ghost" onClick={signOut} disabled={busy}>
+            Se déconnecter
+          </Button>
+        )}
+      </Row>
+
+      {!isSupabaseConfigured ? (
+        <div style={{ marginTop: 8, fontSize: 13, opacity: 0.85 }}>
+          Ajoutez <code>VITE_SUPABASE_URL</code> et <code>VITE_SUPABASE_ANON_KEY</code> dans{" "}
+          <code>.env.local</code> (voir <code>.env.example</code>).
+        </div>
+      ) : (
+        <div style={{ marginTop: 8, display: "grid", gap: 8 }}>
+          <Row gap={8} wrap>
+            <Input value={email} onChange={setEmail} placeholder="Email pour magic link" />
+            <Button onClick={sendMagicLink} disabled={busy || !email.trim()}>
+              Envoyer le lien
+            </Button>
+            {userEmail && (
+              <span style={{ fontSize: 13, opacity: 0.8 }}>
+                Session: <strong>{userEmail}</strong>
+              </span>
+            )}
+          </Row>
+          {status && (
+            <div
+              style={{
+                background: status.startsWith("Erreur") ? "#fee2e2" : "#ecfdf5",
+                color: status.startsWith("Erreur") ? "#7f1d1d" : "#065f46",
+                padding: 8,
+                borderRadius: 8,
+                fontSize: 13
+              }}
+            >
+              {status}
+            </div>
+          )}
+        </div>
+      )}
+    </Panel>
   );
 }
 
@@ -1864,6 +1992,8 @@ function AppInner() {
         token={token}
         setToken={(v) => writeToken(v, true)}
       />
+
+      <SupabaseAuthPanel dark={dark} />
 
       {needsLogin ? (
         <LoginScreen baseUrl={baseUrl} onSuccess={({ token: tok, remember }) => writeToken(tok, remember)} />
