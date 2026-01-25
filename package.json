@@ -1,0 +1,14 @@
+{
+  "name": "niumba",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Niumba - Supabase connectivity helpers",
+  "type": "commonjs",
+  "scripts": {
+    "supabase:healthcheck": "node scripts/supabase-healthcheck.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.57.0",
+    "dotenv": "^16.4.7"
+  }
+}
