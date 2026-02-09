@@ -106,7 +106,7 @@ export const toggleMilestone = async (req: Request, res: Response) => {
       return res.status(404).json({ success: false, error: 'Goal not found' });
     }
 
-    const idx = parseInt(milestoneIndex);
+    const idx = parseInt(milestoneIndex as string);
     if (idx < 0 || idx >= goal.milestones.length) {
       return res.status(400).json({ success: false, error: 'Invalid milestone index' });
     }
